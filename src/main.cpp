@@ -1,7 +1,7 @@
-// Last Modified: Mon 09 Jun 2014 06:12:49 PM EDT
-/**********************************************************************************************************
+// Last Modified: Tue 10 Jun 2014 12:18:00 PM EDT
+/*******************************************************************************************
 *
-*   Framework for Statistical Analysis of Particle-Laden Flows
+*   Framework for the Statistical Analysis of Particle-Laden Flows
 *   
 *   
 *   Author  : Bruno Blais
@@ -9,7 +9,7 @@
 *
 *   Description : Main file for FSAPLF code
 *
-************************************************************************************************************/
+********************************************************************************************/
 
 /*******************
 *  GENERAL INCLUDES
@@ -21,26 +21,32 @@
 #include <iomanip>
 #include <fstream>
 
-
-
 /********************
 * HEADER INCLUDES
 ********************/
 #include "library.h"
+#include "options.h"
+#include "particles.h"
+#include "terminal.h"
 
 
 using namespace std;
 
-int main()
+int main(int argc, char* argv[])
 {
+    //Declarations
+    options opt;
 
-    lib testMaking;
 
-    testMaking.test=1;
 
-    cout << "Is it working correctly? " << endl;
+    //Beggining of code
+    
+    terminalInit();
 
-    testMaking.testFunc();
+    opt.setMode(argc,argv);
+
+
 
     return 0; 
+
 }

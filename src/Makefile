@@ -1,9 +1,9 @@
 CC = g++
-CFLAGS = -Wall
+CFLAGS =  -g -Wall -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized
 EXEC_NAME = main
 INCLUDES = 
 LIBS =
-OBJ_FILES = main.o library.o particles.o 
+OBJ_FILES = main.o library.o particles.o terminal.o options.o 
 INSTALL_DIR = ../
 
 all : $(EXEC_NAME)
