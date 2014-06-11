@@ -1,9 +1,9 @@
 CC = g++
 CFLAGS =  -g -Wall -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized
-EXEC_NAME = main
+EXEC_NAME = fsaplf
 INCLUDES = 
-LIBS =
-OBJ_FILES = main.o library.o particles.o terminal.o options.o 
+LIBS = -lboost_system -lboost_filesystem
+OBJ_FILES = main.o library.o particles.o terminal.o options.o steps.o 
 INSTALL_DIR = ../
 
 all : $(EXEC_NAME)

@@ -1,4 +1,4 @@
-// Last Modified: Tue 10 Jun 2014 11:43:33 AM EDT
+// Last Modified: Wed 11 Jun 2014 08:49:26 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -30,13 +30,15 @@
 
 particles::particles()
 {
-    n_ = 0;
+    np_ = 0;
     ids_ = NULL;
+    v_ = NULL;
+    x_ = NULL;
 }
 
 particles::~particles()
 {
-    for (int i = 0 ; i< n_ ; i++)
+    for (int i = 0 ; i< np_ ; i++)
     {
 	delete x_[i];
 	delete v_[i];
@@ -49,13 +51,13 @@ particles::~particles()
 void particles::allocate(int n)
 {
     //Allocate local memory for the information about the particles
-    n_ = n;
+    np_ = n;
     
     ids_ = new int[n];
     v_ = new double*[n];
     x_ = new double*[n];
 
-    for (int i = 0 ; i < n_ ; i++)
+    for (int i = 0 ; i < np_ ; i++)
     {
 	v_[i] = new double[3];
 	x_[i] = new double[3];
