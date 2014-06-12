@@ -12,7 +12,9 @@
 *
 ********************************************************************************************/
 
-//General Includes
+/******************
+* General Includes
+*******************/
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -23,28 +25,27 @@
 #include <vector>
 #include <algorithm>
 
-
+/********************
+* HEADER INCLUDES
+********************/
 #include "options.h"
+#include "steps.h"
 
 namespace fs = boost::filesystem;
 using namespace std;
 
-options::options()
+options::options(int argc , char* argv[])
 {
+    std::string arg;
+    int i=1;
+
+    //Default constructor
     averaging_=false;
     trajectories_=false;
     vPlane_=false;
     cPlane_=false;
     path_="./";		    // Default path is directory of the executable
-    extension_=".dump";
-    informat_="LIGGGHTS";
-}
-
-
-void options::setMode(int argc , char* argv[])
-{
-    std::string arg;
-    int i=1;
+    extension_=".dump";	    // Default extension name
 
     //Parse the options from the terminal to know which mode to enable
     while (i<argc)
@@ -80,16 +81,10 @@ void options::setMode(int argc , char* argv[])
 	    std::cout << "Dumps path : " << path_ << std::endl; 
 	    i+=2;
 	}
-	else if("-ext" == arg)
+	else if ("-ext" == arg)
 	{
 	    extension_ = argv[i+1];
 	    std::cout << "Extensions considered : " << extension_ << std::endl; 
-	    i+=2;
-	}
-	else if ("-informat" == arg)
-	{
-	    informat_ = argv[i+1];
-	    std::cout << "Input format : " << informat_ << std::endl; 
 	    i+=2;
 	}
 	else
@@ -106,16 +101,16 @@ void options::getFilesIdentification()
     // Find the number of pertinent file in the directory in order to take care of memory allocation
     // This was noticeably simpler in python. Here we use the Boost library in order to simplify
     // interactions with the OS
-    int ending;
-    bool erase = false;
     string local;
     fs::path p (path_);
+    nFiles_=0;
     
     if (fs::exists(p))    // does p actually exist?
     {
+	// Test the validity of the path
 	if (fs::is_directory(p))      
 	{
-	    std::cout << p << " is a directory containing:\n";
+	    std::cout << p << " is a valid directory\n";
 
 	    copy(fs::directory_iterator(p), fs::directory_iterator(), back_inserter(filesPath_));
 
@@ -129,6 +124,7 @@ void options::getFilesIdentification()
 		local = it->string();
 		if (local.compare(local.size()-extension_.size(),extension_.size(),extension_) != 0)  
 		{
+		    //Incrementing here will cause us to skip the next file, no incrementation
 		    filesPath_.erase(it);
 		}
 		else 
@@ -143,6 +139,7 @@ void options::getFilesIdentification()
 	    {
 		cout << it->string() << std::endl;
 		it++;
+		nFiles_++;
 	    }
 	}
 	else
@@ -151,5 +148,20 @@ void options::getFilesIdentification()
     else
 	std::cout << p << " does not even exit ??? what is wrong with you anyway?" << std::endl;
 
+}
+
+int options::getNumberOfFiles()
+{
+    return nFiles_;
+}
+
+void options::setSteps(steps* stp)
+{
+    //This function sets the individual information for each time step in the steps object
+    for (int i = 0 ; i < nFiles_ ; i++)
+    {
+	stp[i].setPath(filesPath_[i].string());
+	stp[i].setNumber(i);
+    }
 }
 

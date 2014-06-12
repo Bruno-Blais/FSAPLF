@@ -1,16 +1,15 @@
-// Last Modified: Wed 11 Jun 2014 02:43:55 PM EDT
+// Last Modified: Thu 12 Jun 2014 11:22:42 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
 *   
 *   
 *   Author  : Bruno Blais
-*   File    : particles.h
+*   File    : steps.h
 *
-*   Description : Container class for all the particles of a file
+*   Description : Container class for each individual iteration
 *
 *******************************************************************************************/
-
 
 #include <string>
 #include "particles.h"
@@ -21,13 +20,18 @@
 class steps
 {
 private :
-    particles particle_;
-    std::string fname_;	    //File name
-    int nit_;		    //Iteration number
-    double t;		    //Time
+    particles particles_;		// Informatio about the particles
+    std::string fname_;			// File name
+    int nit_;				// Iteration number
+    int nstp_;				// Step number
+    int np_;				// Number of particles inside the particles_
+    double t_;				// Time
 
 public :
     steps();
-    ~steps();
+    void setPath(std::string fname);
+    void setNumber(int);		// Set the index of the step
+    void print();			// Print the entire content of the class
+    void load();			// Load the corresponding data file
 };
 #endif

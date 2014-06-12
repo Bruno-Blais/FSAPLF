@@ -1,4 +1,4 @@
-// Last Modified: Wed 11 Jun 2014 03:36:49 PM EDT
+// Last Modified: Thu 12 Jun 2014 10:44:53 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -30,29 +30,35 @@
 #include "particles.h"
 #include "terminal.h"
 
-
 using namespace std;
 
 int main(int argc, char* argv[])
 {
     // Declarations
-    options opt;
     steps* stp;
-
-   
 
     // Initilization of the code
     terminalInit();
-    
-    // Acquire options from terminal arguments
-    opt.setMode(argc,argv);
+
+    //Options constructor parses the input from the terminal
+    options opt(argc, argv);
 
     // Calculate number of files in the folder
     opt.getFilesIdentification();
 
+    // Allocate the steps
+    stp = new steps[opt.getNumberOfFiles()];
+    
+    // Transfer information to each individual step
+    opt.setSteps(stp);
+
+    for (int i=0 ; i<opt.getNumberOfFiles(); i++)
+    {
+	    stp[i].load();
+	    stp[i].print();
+    }
 
 
-
+    terminalClose();
     return 0; 
-
 }

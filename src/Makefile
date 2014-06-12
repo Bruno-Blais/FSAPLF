@@ -4,7 +4,7 @@ EXEC_NAME = fsaplf
 INCLUDES = 
 LIBS = -lboost_system -lboost_filesystem
 OBJ_FILES = main.o library.o particles.o terminal.o options.o steps.o 
-INSTALL_DIR = ../
+INSTALL_DIR = ../test/
 
 all : $(EXEC_NAME)
 
@@ -18,4 +18,5 @@ $(EXEC_NAME) : $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
 
 install :
-	  cp $(EXEC_NAME) $(INSTALL_DIR)
+	make
+	cp $(EXEC_NAME) $(INSTALL_DIR)

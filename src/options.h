@@ -1,4 +1,4 @@
-// Last Modified: Wed 11 Jun 2014 04:36:15 PM EDT
+// Last Modified: Thu 12 Jun 2014 11:17:53 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -20,6 +20,7 @@
 
 #include <string>
 #include <boost/filesystem.hpp>
+#include "steps.h"
 
 #ifndef OPTIONS_H
 #define OPTIONS_H 
@@ -31,20 +32,20 @@ typedef std::vector<fs::path> vecPath;
 class options
 {
 private :
-    bool averaging_;			// Enables per iteration averaging
-    bool trajectories_;			// Enables storage of the particle trajectories
-    bool vPlane_;			// Enables planes of porosity
-    bool cPlane_;			// Enables radial planes of porosity
-    std::string informat_;		// Input format form
-    std::string path_;			// Path of the folder to post-process
-    std::string extension_;		// Extension that is considered in the dump file analysis
-    vecPath filesPath_;			// Individual paths to each files
+    bool averaging_;		    // Enables per iteration averaging
+    bool trajectories_;		    // Enables storage of the particle trajectories
+    bool vPlane_;		    // Enables planes of porosity
+    bool cPlane_;		    // Enables radial planes of porosity
+    std::string path_;		    // Path of the folder to post-process
+    std::string extension_;	    // Extension that is considered in the dump file analysis
+    vecPath filesPath_;		    // Individual paths to each files
+    int nFiles_;		    // Number of files
 
 public :
-    options();
+    options(int,char**);
     void getFilesIdentification();
     void setMode(int argc , char* argv[]);
+    int getNumberOfFiles();	    // Accessor for the number of files
+    void setSteps (steps*);
 };
-
-void listdir(char *);
 #endif
