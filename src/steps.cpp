@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 11:28:13 AM EDT
+// Last Modified: Thu 12 Jun 2014 01:38:38 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -68,7 +68,7 @@ void steps::load()
     fic_in.open(fname_.c_str()); // Conversion of string to char so file may be opened
     std::string buffer;
     std::string secBuffer;
-    std::vector<std::string> tokens;
+
 
     if (fic_in.fail())
     {
@@ -77,26 +77,26 @@ void steps::load()
     else
     {
 	std::cout << std::endl << "Opening file : " << fname_ << std::endl;
-	
+
 	//Remove garbage line 1
 	std::getline(fic_in,buffer);
 	
+	
 	//Read timestep
 	fic_in >> nit_;
+	getline(fic_in,buffer); //closing the line
 
 	std::getline(fic_in,buffer);
 	fic_in >> np_;
 
-	for (int i=0 ; i< 4 ; i++)
+	
+	for (int i=0 ; i< 5 ; i++)
 	{
 	    std::getline(fic_in,buffer);
 	}
 
 	particles_.allocate(np_);
 	particles_.load(&fic_in);
-
-	std::getline(fic_in,buffer);
-	boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));	
 
     }
     

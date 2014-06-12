@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS =  -g -Wall -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized
+CFLAGS =  -O2 -Wall -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized
 EXEC_NAME = fsaplf
 INCLUDES = 
 LIBS = -lboost_system -lboost_filesystem

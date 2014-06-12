@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 11:32:35 AM EDT
+// Last Modified: Thu 12 Jun 2014 01:54:37 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -86,6 +86,8 @@ double* particles::getX(int id)
 
 void particles::load(std::ifstream *fic_in)
 {
+    int inputType=0;
+
     //Declaration
     std::string buffer;
     std::vector<std::string> tokens;
@@ -97,6 +99,71 @@ void particles::load(std::ifstream *fic_in)
     boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));	
 
     // Depending on the header type, finally parse the data into the particles_ structure
+    if (
+	tokens[2]=="id"		&&
+	tokens[3]=="type"	&&
+	tokens[5]=="x"		&&
+	tokens[8]=="ix"		&&
+	tokens[11]=="vx"	&&
+	tokens[14]=="fx"	&&
+	tokens[17]=="omegax"	&&
+	tokens[20]=="radius"	
+	) inputType=1;
+    
+    if (
+	tokens[2]=="id"		&&
+	tokens[3]=="type"	&&
+	tokens[5]=="x"		&&
+	tokens[8]=="vx"		&&
+	tokens[11]=="fx"	&&
+	tokens[14]=="radius"	
+	) inputType=2;
+   
+   
+
+    if (inputType==0) 
+	std::cout << "A valid LAMMPS input type has not been detected, please correct this..." << std::endl;
+
+    else
+    {	
+	if (inputType==1)
+	{
+	    std::cout << "Input format : " << inputType << std::endl ;
+	    for(int i=0 ; i<np_ ; i++)
+	    {
+
+		(*fic_in) >> ids_[i]; 
+		for (int j=0 ; j<2 ; j++) (*fic_in) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> buffer;
+	    	for (int j=0 ; j<3 ; j++) (*fic_in) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> f_[i][j];
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> buffer;
+		(*fic_in) >> r_[i]; 
+		
+		//Read a line
+		std::getline((*fic_in),buffer);
+	    }
+	}
+	
+	if (inputType==2)
+	{
+	    std::cout << "Input format : " << inputType << std::endl; 
+	     for(int i=0 ; i<np_ ; i++)
+	    {
+		//Cast into the right variable
+		(*fic_in) >> ids_[i]; 
+		(*fic_in) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*fic_in) >> f_[i][j];
+		(*fic_in) >> r_[i]; 
+
+		//Read a line
+		std::getline((*fic_in),buffer);
+	    }
+	}
+    }
 }
 
 void particles::print()
