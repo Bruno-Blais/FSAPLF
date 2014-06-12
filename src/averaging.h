@@ -1,13 +1,13 @@
-// Last Modified: Thu 12 Jun 2014 04:01:59 PM EDT
+// Last Modified: Thu 12 Jun 2014 04:04:17 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
 *   
 *   
 *   Author  : Bruno Blais
-*   File    : particles.h
+*   File    : averaging.h
 *
-*   Description : Container class for all the particles of a file
+*   Description : Container class for all the averaged properties of all files
 *
 *******************************************************************************************/
 
@@ -18,28 +18,25 @@
 #include <iomanip>
 #include <fstream>
 
-#ifndef PARTICLES_H
-#define PARTICLES_H 
+#ifndef AVERAGING_H
+#define AVERAGING_H 
 
-class particles
+class averaging
 {
 private :
-    int np_;	            // Number of particles
-    int* ids_;		    // Identification of the particles
     double** v_;	    // Velocity vector
     double** x_;	    // Positions vector
     double** f_;	    // Fluid-Solid interaction forces (fdrag)
     double** u_;	    // Velocity of the fluid
     double*  r_;	    // radiuses
+    std::vector<double> box_;	    // Box for averaging
 
 public :
-    particles();
-    ~particles();
-    void allocate(int n);
-    double* getV(int);	    // Access velocity
-    double* getX(int);	    // Access position
-    void load(std::ifstream*);
-    void print();	    // Print content of the class
-    std::vector<double> averageV();
+    averaging();
+    ~averaging();
+    void allocate(int);
+    void setV(int,double*);
+    void setX(int,double*);
+    void setF(int,double*);
 };
 #endif

@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 10:44:53 AM EDT
+// Last Modified: Thu 12 Jun 2014 04:01:32 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -28,6 +28,7 @@
 #include "options.h"
 #include "steps.h"
 #include "particles.h"
+#include "averaging.h"
 #include "terminal.h"
 
 using namespace std;
@@ -36,6 +37,7 @@ int main(int argc, char* argv[])
 {
     // Declarations
     steps* stp;
+    averaging avg;
 
     // Initilization of the code
     terminalInit();
@@ -48,7 +50,11 @@ int main(int argc, char* argv[])
 
     // Allocate the steps
     stp = new steps[opt.getNumberOfFiles()];
-    
+   
+    // If averaging if on, allocate that up
+    if(opt.getAveraging()) avg.allocate(opt.getNumberOfFiles());
+
+
     // Transfer information to each individual step
     opt.setSteps(stp);
 
@@ -56,8 +62,11 @@ int main(int argc, char* argv[])
     {
 	    stp[i].load();
 	    stp[i].print();
+	    if (opt.getAveraging())
+	    {
+	    }
+	    //Set the mode pertaining to the individual steps
     }
-
 
     terminalClose();
     return 0; 

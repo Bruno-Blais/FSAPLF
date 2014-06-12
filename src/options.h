@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 11:17:53 AM EDT
+// Last Modified: Thu 12 Jun 2014 02:57:00 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -36,10 +36,12 @@ private :
     bool trajectories_;		    // Enables storage of the particle trajectories
     bool vPlane_;		    // Enables planes of porosity
     bool cPlane_;		    // Enables radial planes of porosity
+    bool batch_;		    // Enables a batch treatment of data and flushing out of data
     std::string path_;		    // Path of the folder to post-process
     std::string extension_;	    // Extension that is considered in the dump file analysis
     vecPath filesPath_;		    // Individual paths to each files
     int nFiles_;		    // Number of files
+    int batchFreq_;		    // Frequency of memory flushing for batch process
 
 public :
     options(int,char**);
@@ -47,5 +49,6 @@ public :
     void setMode(int argc , char* argv[]);
     int getNumberOfFiles();	    // Accessor for the number of files
     void setSteps (steps*);
+    bool getAveraging();
 };
 #endif

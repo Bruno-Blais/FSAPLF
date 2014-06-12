@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 10:53:31 AM EDT
+// Last Modified: Thu 12 Jun 2014 03:21:24 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -28,7 +28,7 @@ void terminalInit()
     cout << "******************************************************************" << endl;
     cout << "* FSAPLF                                                         *" << endl;
     cout << "* Framework for the Statistical Analysis of Particle-Laden Flows *" << endl;
-    cout << "* Version 0.1						         *" << endl;
+    cout << "* Version 0.2						         *" << endl;
     cout << "* Created by Bruno Blais				         *" << endl;
     cout << "******************************************************************" << endl;
     cout << endl;

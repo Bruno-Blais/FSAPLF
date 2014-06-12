@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 01:54:37 PM EDT
+// Last Modified: Thu 12 Jun 2014 04:05:55 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -119,8 +119,6 @@ void particles::load(std::ifstream *fic_in)
 	tokens[14]=="radius"	
 	) inputType=2;
    
-   
-
     if (inputType==0) 
 	std::cout << "A valid LAMMPS input type has not been detected, please correct this..." << std::endl;
 
@@ -131,7 +129,6 @@ void particles::load(std::ifstream *fic_in)
 	    std::cout << "Input format : " << inputType << std::endl ;
 	    for(int i=0 ; i<np_ ; i++)
 	    {
-
 		(*fic_in) >> ids_[i]; 
 		for (int j=0 ; j<2 ; j++) (*fic_in) >> buffer;
 		for (int j=0 ; j<3 ; j++) (*fic_in) >> x_[i][j];
@@ -168,6 +165,14 @@ void particles::load(std::ifstream *fic_in)
 
 void particles::print()
 {
+}
 
+std::vector<double> averageV()
+{
+    std::vector<double> vAvg(4);
 
+    vAvg[0]=10.;
+    vAvg[1]=2.;
+
+    return vAvg;
 }

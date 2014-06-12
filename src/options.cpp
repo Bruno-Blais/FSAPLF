@@ -44,8 +44,11 @@ options::options(int argc , char* argv[])
     trajectories_=false;
     vPlane_=false;
     cPlane_=false;
+    batch_=false;	    
+    batchFreq_=999999;  
     path_="./";		    // Default path is directory of the executable
     extension_=".dump";	    // Default extension name
+    
 
     //Parse the options from the terminal to know which mode to enable
     while (i<argc)
@@ -84,6 +87,12 @@ options::options(int argc , char* argv[])
 	else if ("-ext" == arg)
 	{
 	    extension_ = argv[i+1];
+	    std::cout << "Extensions considered : " << extension_ << std::endl; 
+	    i+=2;
+	}
+	else if ("-batch" == arg)
+	{
+	    batchFreq_ = atoi(argv[i+1]);
 	    std::cout << "Extensions considered : " << extension_ << std::endl; 
 	    i+=2;
 	}
@@ -153,6 +162,11 @@ void options::getFilesIdentification()
 int options::getNumberOfFiles()
 {
     return nFiles_;
+}
+
+bool options::getAveraging()
+{
+    return averaging_;
 }
 
 void options::setSteps(steps* stp)
