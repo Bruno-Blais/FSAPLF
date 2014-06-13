@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 04:04:17 PM EDT
+// Last Modified: Fri 13 Jun 2014 09:50:16 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -24,12 +24,13 @@
 class averaging
 {
 private :
+    int	     n_;	    // Number of averages stored
     double** v_;	    // Velocity vector
     double** x_;	    // Positions vector
     double** f_;	    // Fluid-Solid interaction forces (fdrag)
     double** u_;	    // Velocity of the fluid
     double*  r_;	    // radiuses
-    std::vector<double> box_;	    // Box for averaging
+    //std::vector<double> box_;	    // Box for averaging
 
 public :
     averaging();

@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 04:06:17 PM EDT
+// Last Modified: Fri 13 Jun 2014 09:52:05 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -26,20 +26,37 @@
 ********************/
 #include "averaging.h"
 
-#define LARGE 9999.
+#define LARGE 99999.
 
 averaging::averaging()
 {
+    r_=NULL;
+    v_=NULL;
+    x_=NULL;
+    f_=NULL;
+    u_=NULL;
 }
 
 averaging::~averaging()
 {
+    std::cout << "Averaging destructor?" << std::endl;
+    for (int i =0 ; i<n_ ;i++)
+    {
+	delete v_[i];
+	delete x_[i];
+	delete f_[i];
+    }
+    delete v_;
+    delete x_;
+    delete f_;
+    delete r_;
 }
 
 void averaging::allocate(int n)
 {
     //Allocate local memory for the information about the averages
-    
+   
+    n_ = n;
     r_ = new double[n];
     v_ = new double*[n];
     x_ = new double*[n];

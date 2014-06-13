@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 02:57:00 PM EDT
+// Last Modified: Fri 13 Jun 2014 09:35:21 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -18,12 +18,13 @@
 *
 ********************************************************************************************/
 
+#ifndef OPTIONS_H
+#define OPTIONS_H
+
 #include <string>
 #include <boost/filesystem.hpp>
 #include "steps.h"
 
-#ifndef OPTIONS_H
-#define OPTIONS_H 
 
 namespace fs = boost::filesystem;
 
@@ -45,6 +46,7 @@ private :
 
 public :
     options(int,char**);
+    ~options();
     void getFilesIdentification();
     void setMode(int argc , char* argv[]);
     int getNumberOfFiles();	    // Accessor for the number of files

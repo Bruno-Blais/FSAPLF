@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 04:01:32 PM EDT
+// Last Modified: Fri 13 Jun 2014 10:51:26 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -24,7 +24,6 @@
 /********************
 * HEADER INCLUDES
 ********************/
-#include "library.h"
 #include "options.h"
 #include "steps.h"
 #include "particles.h"
@@ -61,11 +60,10 @@ int main(int argc, char* argv[])
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
 	    stp[i].load();
-	    stp[i].print();
+
 	    if (opt.getAveraging())
-	    {
-	    }
-	    //Set the mode pertaining to the individual steps
+		    stp[i].average();
+	    stp[i].print();
     }
 
     terminalClose();

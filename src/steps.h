@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 03:56:49 PM EDT
+// Last Modified: Fri 13 Jun 2014 09:29:32 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -29,9 +29,11 @@ private :
 
 public :
     steps();
+    ~steps();
     void setPath(std::string fname);
     void setNumber(int);		// Set the index of the step
     void print();			// Print the entire content of the class
     void load();			// Load the corresponding data file
+    void average();			// Averaging function
 };
 #endif

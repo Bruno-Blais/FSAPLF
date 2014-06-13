@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 04:05:55 PM EDT
+// Last Modified: Fri 13 Jun 2014 10:50:47 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -30,16 +30,20 @@
 ********************/
 #include "particles.h"
 
-particles::particles()
+particles::particles() : vAvg_(4), xAvg_(4), fAvg_(4), uAvg_(4) 
 {
     np_ = 0;
     ids_ = NULL;
     v_ = NULL;
     x_ = NULL;
+    f_ = NULL;
+    r_ = NULL;
+    u_ = NULL;
 }
 
 particles::~particles()
 {
+    std::cout<<" Destructing particles " << std::endl;
     for (int i = 0 ; i< np_ ; i++)
     {
 	delete x_[i];
@@ -165,14 +169,49 @@ void particles::load(std::ifstream *fic_in)
 
 void particles::print()
 {
+    std::cout << "Averaged quantities \n";
+    std::cout << "vAvg : " << vAvg_[0] << " " << vAvg_[1] << " " << vAvg_[2] << " " << vAvg_[3] << "\n" ;
+    std::cout << "xAvg : " << xAvg_[0] << " " << xAvg_[1] << " " << xAvg_[2] << " " << xAvg_[3] << "\n" ;
+    std::cout << "fAvg : " << fAvg_[0] << " " << fAvg_[1] << " " << fAvg_[2] << " " << fAvg_[3] << "\n" ;
 }
 
-std::vector<double> averageV()
+void particles::calcNorm()
 {
-    std::vector<double> vAvg(4);
+    // Calculate the norm of each per-particle quantities
+    for (int i=0 ; i<np_ ; i++)
+    {
+	v_[i][3]= sqrt(v_[i][0]*v_[i][0] + v_[i][1]*v_[i][1] + v_[i][2]*v_[i][2]);
+	x_[i][3]= sqrt(x_[i][0]*x_[i][0] + x_[i][1]*x_[i][1] + x_[i][2]*x_[i][2]);
+	f_[i][3]= sqrt(f_[i][0]*f_[i][0] + f_[i][1]*f_[i][1] + f_[i][2]*f_[i][2]);
+    }
+}
 
-    vAvg[0]=10.;
-    vAvg[1]=2.;
+void particles::calcAverage()
+{
+    // Calculate the average of each variable and store them in a vector array
 
-    return vAvg;
+    for (int i=0 ; i< np_ ; i++)
+    {
+	for (int j=0; j< 4 ; j++)
+	{
+	    vAvg_[j] += v_[i][j];
+	    xAvg_[j] += x_[i][j];
+	    fAvg_[j] += f_[i][j];
+	}
+    }
+
+    for (int j=0 ; j<4 ; j++)
+    {
+	vAvg_[j] = vAvg_[j]/np_;
+	xAvg_[j] = xAvg_[j]/np_;
+	fAvg_[j] = fAvg_[j]/np_;
+    }
+
+}
+
+
+
+std::vector<double> particles::getAverageV()
+{
+    return vAvg_;
 }

@@ -104,6 +104,12 @@ options::options(int argc , char* argv[])
     }
 }
 
+options::~options()
+{
+    std::cout << "Trying to destroy the options ? " << std::endl;
+    filesPath_.clear();
+}
+
 void options::getFilesIdentification()
 {
    

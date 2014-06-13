@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 03:03:39 PM EDT
+// Last Modified: Fri 13 Jun 2014 10:49:08 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -39,6 +39,12 @@ steps::steps()
     np_=0.;
 }
 
+steps::~steps()
+{
+    std::cout<<"Destructing steps " << std::endl;
+    particles_.~particles();
+}
+
 void steps::setPath(std::string fname)
 {
     fname_=fname;
@@ -59,7 +65,7 @@ void steps::print()
     std::cout << "Local number of particles : " << np_ << std::endl;
 
     // Add the particle print here
-    // particles_.prin
+    particles_.print();
 }
 
 void steps::load()
@@ -81,7 +87,6 @@ void steps::load()
 	//Remove garbage line 1
 	std::getline(fic_in,buffer);
 	
-	
 	//Read timestep
 	fic_in >> nit_;
 	getline(fic_in,buffer); //closing the line
@@ -100,4 +105,10 @@ void steps::load()
 
     }
     
+}
+
+void steps::average()
+{
+    particles_.calcNorm();
+    particles_.calcAverage();
 }
