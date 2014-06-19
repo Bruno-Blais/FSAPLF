@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 10:01:14 AM EDT
+// Last Modified: Fri 13 Jun 2014 11:12:40 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -32,7 +32,7 @@ private :
     double** u_;	    // Velocity of the fluid
     double*  r_;	    // radiuses
 
-    //Average properties
+//Average properties
    std::vector<double> vAvg_; 
    std::vector<double> xAvg_;
    std::vector<double> fAvg_;
@@ -49,5 +49,8 @@ public :
     void calcAverage();			// Calculate the average of each variables
     void calcNorm();			// Calculate the norm of each variables
     std::vector<double> getAverageV();	// Return average velocity
+    std::vector<double> getAverageX();	// Return average position
+    std::vector<double> getAverageF();	// Return average force
+    std::vector<double> getAverageU();	// Return average fluid velocity
 };
 #endif

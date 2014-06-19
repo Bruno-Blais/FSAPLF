@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 10:49:08 AM EDT
+// Last Modified: Fri 13 Jun 2014 11:15:07 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -75,7 +75,6 @@ void steps::load()
     std::string buffer;
     std::string secBuffer;
 
-
     if (fic_in.fail())
     {
 	std::cout << "File : " << fname_ << " could not be opened correctly " << std::endl;
@@ -94,21 +93,36 @@ void steps::load()
 	std::getline(fic_in,buffer);
 	fic_in >> np_;
 
-	
 	for (int i=0 ; i< 5 ; i++)
 	{
 	    std::getline(fic_in,buffer);
 	}
-
 	particles_.allocate(np_);
 	particles_.load(&fic_in);
-
     }
-    
 }
-
 void steps::average()
 {
     particles_.calcNorm();
     particles_.calcAverage();
+}
+
+std::vector<double> steps::getAverageV()
+{
+    return particles_.getAverageV();
+}
+
+std::vector<double> steps::getAverageX()
+{
+    return particles_.getAverageX();
+}
+
+std::vector<double> steps::getAverageF()
+{
+    return particles_.getAverageF();
+}
+
+std::vector<double> steps::getAverageU()
+{
+    return particles_.getAverageU();
 }

@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 09:29:32 AM EDT
+// Last Modified: Fri 13 Jun 2014 11:14:11 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -12,6 +12,7 @@
 *******************************************************************************************/
 
 #include <string>
+#include <vector>
 #include "particles.h"
 
 #ifndef STEPS_H
@@ -35,5 +36,9 @@ public :
     void print();			// Print the entire content of the class
     void load();			// Load the corresponding data file
     void average();			// Averaging function
+    std::vector<double> getAverageV();
+    std::vector<double> getAverageX();
+    std::vector<double> getAverageF();
+    std::vector<double> getAverageU();
 };
 #endif

@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 09:35:21 AM EDT
+// Last Modified: Fri 13 Jun 2014 11:50:01 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -24,6 +24,7 @@
 #include <string>
 #include <boost/filesystem.hpp>
 #include "steps.h"
+#include "boxes.h"
 
 
 namespace fs = boost::filesystem;
@@ -38,11 +39,19 @@ private :
     bool vPlane_;		    // Enables planes of porosity
     bool cPlane_;		    // Enables radial planes of porosity
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
+    bool box_;			    // Enables region boxing for averaging analysis
+
     std::string path_;		    // Path of the folder to post-process
+    std::string optionsPath_;	    // Path of the option files
     std::string extension_;	    // Extension that is considered in the dump file analysis
     vecPath filesPath_;		    // Individual paths to each files
     int nFiles_;		    // Number of files
     int batchFreq_;		    // Frequency of memory flushing for batch process
+    
+    // Information about boxes for averaging
+    int nBox_;
+    boxes *boxes_;		    // Cartesian boxes and cylindrical boxes are available
+
 
 public :
     options(int,char**);

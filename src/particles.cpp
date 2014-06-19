@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 10:50:47 AM EDT
+// Last Modified: Fri 13 Jun 2014 11:24:48 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -189,7 +189,6 @@ void particles::calcNorm()
 void particles::calcAverage()
 {
     // Calculate the average of each variable and store them in a vector array
-
     for (int i=0 ; i< np_ ; i++)
     {
 	for (int j=0; j< 4 ; j++)
@@ -206,12 +205,26 @@ void particles::calcAverage()
 	xAvg_[j] = xAvg_[j]/np_;
 	fAvg_[j] = fAvg_[j]/np_;
     }
-
 }
-
-
 
 std::vector<double> particles::getAverageV()
 {
     return vAvg_;
 }
+
+std::vector<double> particles::getAverageX()
+{
+    return xAvg_;
+}
+
+std::vector<double> particles::getAverageF()
+{
+    return fAvg_;
+}
+
+std::vector<double> particles::getAverageU()
+{
+    return uAvg_;
+}
+
+

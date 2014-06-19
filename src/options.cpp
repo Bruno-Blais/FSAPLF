@@ -96,6 +96,11 @@ options::options(int argc , char* argv[])
 	    std::cout << "Extensions considered : " << extension_ << std::endl; 
 	    i+=2;
 	}
+	else if("-box" ==arg)
+	{
+	    std::cout << "Region boxing analysis will take place" << std::endl;
+	    box_=true;
+	}
 	else
 	{
 	    std::cout << "Option " << arg << " is not available" << std::endl;

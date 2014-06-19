@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 09:52:05 AM EDT
+// Last Modified: Fri 13 Jun 2014 11:23:55 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -79,26 +79,20 @@ void averaging::allocate(int n)
 */
 }
 
-void averaging::setV (int k, double *v)
+void averaging::setV (int k, std::vector<double> v)
 {
     for (int i=0 ; i<4 ; i++)
-    {
 	v_[k][i] = v[i];
-    }
 }
 
-void averaging::setX (int k, double *v)
+void averaging::setX (int k, std::vector<double> v)
 {
     for (int i=0 ; i<4 ; i++)
-    {
 	x_[k][i] = v[i];
-    }
 }
 
-void averaging::setF (int k, double *v)
+void averaging::setF (int k, std::vector<double> v)
 {
     for (int i=0 ; i<4 ; i++)
-    {
 	f_[k][i] = v[i];
-    }
 }
