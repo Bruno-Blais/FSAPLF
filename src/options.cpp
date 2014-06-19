@@ -47,6 +47,8 @@ options::options(int argc , char* argv[])
     batch_=false;	    
     batchFreq_=999999;  
     path_="./";		    // Default path is directory of the executable
+    outputPath_="./";	    // Default output is local directory
+    caseLabel_="dummy";	
     extension_=".dump";	    // Default extension name
     
 
@@ -60,11 +62,16 @@ options::options(int argc , char* argv[])
 	    averaging_=true;
 	    i++;
 	}
-	else if ("-trajectory" == arg )
+	else if ("-batch" == arg)
 	{
-	    std::cout << "Trajectories enabled" << std::endl;
-	    trajectories_=true;
-	    i++;
+	    batchFreq_ = atoi(argv[i+1]);
+	    std::cout << "Memory will be flushed every  : " << batchFreq_ << std::endl; 
+	    i+=2;
+	}
+	else if("-box" ==arg)
+	{
+	    std::cout << "Region boxing analysis will take place" << std::endl;
+	    box_=true;
 	}
 	else if ("-cplane" ==arg)
 	{
@@ -72,11 +79,23 @@ options::options(int argc , char* argv[])
 	    cPlane_=true;
 	    i++;
 	}
-	else if ("-zplane" ==arg)
+	else if ("-ext" == arg)
 	{
-	    std::cout << "Vertical porosity analysis enabled" << std::endl;
-	    vPlane_=true;
-	    i++;
+	    extension_ = argv[i+1];
+	    std::cout << "Extensions considered : " << extension_ << std::endl; 
+	    i+=2;
+	}
+	else if ("-label" == arg)
+	{
+	    caseLabel_ = argv[i+1];
+	    std::cout << "Output files label : " << caseLabel_ << std::endl;
+	    i+=2;
+	}
+	else if ("-out" ==arg)
+	{
+	    outputPath_ = argv[i+1];
+	    std::cout << "Output path is : " << outputPath_ << std::endl;
+	    i +=2;
 	}
 	else if ("-path" == arg)
 	{
@@ -84,22 +103,17 @@ options::options(int argc , char* argv[])
 	    std::cout << "Dumps path : " << path_ << std::endl; 
 	    i+=2;
 	}
-	else if ("-ext" == arg)
+	else if ("-trajectory" == arg )
 	{
-	    extension_ = argv[i+1];
-	    std::cout << "Extensions considered : " << extension_ << std::endl; 
-	    i+=2;
+	    std::cout << "Trajectories enabled" << std::endl;
+	    trajectories_=true;
+	    i++;
 	}
-	else if ("-batch" == arg)
+	else if ("-zplane" ==arg)
 	{
-	    batchFreq_ = atoi(argv[i+1]);
-	    std::cout << "Extensions considered : " << extension_ << std::endl; 
-	    i+=2;
-	}
-	else if("-box" ==arg)
-	{
-	    std::cout << "Region boxing analysis will take place" << std::endl;
-	    box_=true;
+	    std::cout << "Vertical porosity analysis enabled" << std::endl;
+	    vPlane_=true;
+	    i++;
 	}
 	else
 	{
@@ -178,6 +192,21 @@ int options::getNumberOfFiles()
 bool options::getAveraging()
 {
     return averaging_;
+}
+
+std::string options::getLabel()
+{
+    return caseLabel_;
+}
+
+std::string options::getPath()
+{
+    return path_;
+}
+
+std::string options::getOutputPath()
+{
+    return outputPath_;
 }
 
 void options::setSteps(steps* stp)

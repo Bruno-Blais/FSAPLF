@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 11:24:48 AM EDT
+// Last Modified: Thu 19 Jun 2014 03:34:33 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -25,6 +25,8 @@ class averaging
 {
 private :
     int	     n_;	    // Number of averages stored
+    int*     nIter_;	    // Iteration number
+    double*  t_;	    // Time for each iteration
     double** v_;	    // Velocity vector
     double** x_;	    // Positions vector
     double** f_;	    // Fluid-Solid interaction forces (fdrag)
@@ -38,5 +40,6 @@ public :
     void setV(int, std::vector<double>);
     void setX(int, std::vector<double>);
     void setF(int, std::vector<double>);
+    void writeFile(std::string, std::string);
 };
 #endif

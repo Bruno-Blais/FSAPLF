@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 11:20:17 AM EDT
+// Last Modified: Thu 19 Jun 2014 03:38:08 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -70,6 +70,10 @@ int main(int argc, char* argv[])
 	    }
 	    stp[i].print();
     }
+
+    // Output of global results
+
+    if (opt.getAveraging()) avg.writeFile(opt.getOutputPath(), opt.getLabel());
 
     terminalClose();
     return 0; 

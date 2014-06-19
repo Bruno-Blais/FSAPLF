@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 11:24:48 AM EDT
+// Last Modified: Thu 19 Jun 2014 04:35:16 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -49,10 +49,12 @@ particles::~particles()
 	delete x_[i];
 	delete v_[i];
 	delete f_[i];
+	delete u_[i];
     }
     delete x_;
     delete v_;
     delete f_;
+    delete u_;
     delete ids_;
     delete r_;
 }
@@ -67,42 +69,37 @@ void particles::allocate(int n)
     v_ = new double*[n];
     x_ = new double*[n];
     f_ = new double*[n];
+    u_ = new double*[n];
+
 
     for (int i = 0 ; i < np_ ; i++)
     {
 	v_[i] = new double[4];
 	x_[i] = new double[4];
 	f_[i] = new double[4];
+	u_[i] = new double[4];
     }
 }
 
-double* particles::getV(int id)
-{
-    //Returns the pointer to the velocity of a particle using it's id
-    return v_[id]; 
-}
-
-double* particles::getX(int id)
-{
-    //Returnes pointer to position
-    return x_[id];
-}
-
-void particles::load(std::ifstream *fic_in)
+void particles::load(std::ifstream *ficIn)
 {
     int inputType=0;
+    bool isPresentU=false;
 
     //Declaration
     std::string buffer;
     std::vector<std::string> tokens;
 
     //Get the lines
-    std::getline((*fic_in),buffer);
+    std::getline((*ficIn),buffer);
 
     //Parse the header of the files
     boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));	
 
     // Depending on the header type, finally parse the data into the particles_ structure
+    // Some default LAMMPS input are already present, however this is not generic. The code does not
+    // interpret the data structure per se, it just detects which one among a set list of data structures
+    // Adding further data will eventually make it generic (I guess?)
     if (
 	tokens[2]=="id"		&&
 	tokens[3]=="type"	&&
@@ -133,17 +130,17 @@ void particles::load(std::ifstream *fic_in)
 	    std::cout << "Input format : " << inputType << std::endl ;
 	    for(int i=0 ; i<np_ ; i++)
 	    {
-		(*fic_in) >> ids_[i]; 
-		for (int j=0 ; j<2 ; j++) (*fic_in) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> buffer;
-	    	for (int j=0 ; j<3 ; j++) (*fic_in) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> f_[i][j];
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> buffer;
-		(*fic_in) >> r_[i]; 
-		
+		(*ficIn) >> ids_[i]; 
+		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
+	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
+		(*ficIn) >> r_[i]; 
+	
 		//Read a line
-		std::getline((*fic_in),buffer);
+		std::getline((*ficIn),buffer);
 	    }
 	}
 	
@@ -153,15 +150,24 @@ void particles::load(std::ifstream *fic_in)
 	     for(int i=0 ; i<np_ ; i++)
 	    {
 		//Cast into the right variable
-		(*fic_in) >> ids_[i]; 
-		(*fic_in) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*fic_in) >> f_[i][j];
-		(*fic_in) >> r_[i]; 
+		(*ficIn) >> ids_[i]; 
+		(*ficIn) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
+		(*ficIn) >> r_[i]; 
 
 		//Read a line
-		std::getline((*fic_in),buffer);
+		std::getline((*ficIn),buffer);
+	    }
+	}
+
+	// Variables that are not present in the input file are zeroed
+	if (isPresentU == false)
+	{
+	    for (int i=0 ; i<np_ ; i++)
+	    {
+		for (int j=0 ; j<3 ; j++) u_[i][j]=0.;
 	    }
 	}
     }
@@ -173,6 +179,7 @@ void particles::print()
     std::cout << "vAvg : " << vAvg_[0] << " " << vAvg_[1] << " " << vAvg_[2] << " " << vAvg_[3] << "\n" ;
     std::cout << "xAvg : " << xAvg_[0] << " " << xAvg_[1] << " " << xAvg_[2] << " " << xAvg_[3] << "\n" ;
     std::cout << "fAvg : " << fAvg_[0] << " " << fAvg_[1] << " " << fAvg_[2] << " " << fAvg_[3] << "\n" ;
+    std::cout << "uAvg : " << uAvg_[0] << " " << uAvg_[1] << " " << uAvg_[2] << " " << uAvg_[3] << "\n" ;
 }
 
 void particles::calcNorm()
@@ -183,6 +190,7 @@ void particles::calcNorm()
 	v_[i][3]= sqrt(v_[i][0]*v_[i][0] + v_[i][1]*v_[i][1] + v_[i][2]*v_[i][2]);
 	x_[i][3]= sqrt(x_[i][0]*x_[i][0] + x_[i][1]*x_[i][1] + x_[i][2]*x_[i][2]);
 	f_[i][3]= sqrt(f_[i][0]*f_[i][0] + f_[i][1]*f_[i][1] + f_[i][2]*f_[i][2]);
+	u_[i][3]= sqrt(u_[i][0]*u_[i][0] + u_[i][1]*u_[i][1] + u_[i][2]*u_[i][2]);
     }
 }
 
@@ -196,6 +204,7 @@ void particles::calcAverage()
 	    vAvg_[j] += v_[i][j];
 	    xAvg_[j] += x_[i][j];
 	    fAvg_[j] += f_[i][j];
+	    uAvg_[j] += u_[i][j];
 	}
     }
 
@@ -204,27 +213,26 @@ void particles::calcAverage()
 	vAvg_[j] = vAvg_[j]/np_;
 	xAvg_[j] = xAvg_[j]/np_;
 	fAvg_[j] = fAvg_[j]/np_;
+	uAvg_[j] = uAvg_[j]/np_;
     }
 }
 
-std::vector<double> particles::getAverageV()
-{
-    return vAvg_;
-}
 
-std::vector<double> particles::getAverageX()
-{
-    return xAvg_;
-}
+//*************
+// Accessors
+//*************
 
-std::vector<double> particles::getAverageF()
-{
-    return fAvg_;
-}
 
-std::vector<double> particles::getAverageU()
-{
-    return uAvg_;
-}
+double* particles::getV(int id)	{return v_[id];}
+
+double* particles::getX(int id) {return x_[id];}
+
+std::vector<double> particles::getAverageV(){return vAvg_;}
+
+std::vector<double> particles::getAverageX(){return xAvg_;}
+
+std::vector<double> particles::getAverageF(){return fAvg_;}
+
+std::vector<double> particles::getAverageU(){return uAvg_;}
 
 

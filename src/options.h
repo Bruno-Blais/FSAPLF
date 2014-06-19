@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 11:50:01 AM EDT
+// Last Modified: Thu 19 Jun 2014 03:37:45 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -41,8 +41,10 @@ private :
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
     bool box_;			    // Enables region boxing for averaging analysis
 
+    std::string caseLabel_;	    // Label to give to the post-processing of the information
     std::string path_;		    // Path of the folder to post-process
     std::string optionsPath_;	    // Path of the option files
+    std::string outputPath_;	    // Path of the folder where to put the output files
     std::string extension_;	    // Extension that is considered in the dump file analysis
     vecPath filesPath_;		    // Individual paths to each files
     int nFiles_;		    // Number of files
@@ -58,8 +60,13 @@ public :
     ~options();
     void getFilesIdentification();
     void setMode(int argc , char* argv[]);
-    int getNumberOfFiles();	    // Accessor for the number of files
     void setSteps (steps*);
+
+    //Accessors
     bool getAveraging();
+    int getNumberOfFiles();	    // Accessor for the number of files
+    std::string getLabel();
+    std::string getPath();
+    std::string getOutputPath();
 };
 #endif

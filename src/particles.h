@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 11:12:40 AM EDT
+// Last Modified: Thu 19 Jun 2014 04:33:50 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -33,24 +33,29 @@ private :
     double*  r_;	    // radiuses
 
 //Average properties
-   std::vector<double> vAvg_; 
-   std::vector<double> xAvg_;
-   std::vector<double> fAvg_;
-   std::vector<double> uAvg_;
+   std::vector<double> vAvg_; // Average velocity
+   std::vector<double> xAvg_; // Average position
+   std::vector<double> fAvg_; // Average force
+   std::vector<double> uAvg_; // Average fluid velocity
 
 public :
     particles();
     ~particles();
-    void allocate(int n);
+    void allocate(int n);		// Allocate the required memory for the particles array
     double* getV(int);			// Access velocity
     double* getX(int);			// Access position
     void load(std::ifstream*);		// Load particle information
     void print();			// Print content of the class
-    void calcAverage();			// Calculate the average of each variables
     void calcNorm();			// Calculate the norm of each variables
+
+    // Related to averaging
+    void calcAverage();			// Calculate the average of each variables
     std::vector<double> getAverageV();	// Return average velocity
     std::vector<double> getAverageX();	// Return average position
     std::vector<double> getAverageF();	// Return average force
     std::vector<double> getAverageU();	// Return average fluid velocity
+
+    // Related to planes
+    
 };
 #endif
