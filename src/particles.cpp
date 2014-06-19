@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 04:35:16 PM EDT
+// Last Modified: Thu 19 Jun 2014 04:53:21 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -29,6 +29,8 @@
 * HEADER INCLUDES
 ********************/
 #include "particles.h"
+
+#define PI 3.14159265359
 
 particles::particles() : vAvg_(4), xAvg_(4), fAvg_(4), uAvg_(4) 
 {
@@ -207,7 +209,6 @@ void particles::calcAverage()
 	    uAvg_[j] += u_[i][j];
 	}
     }
-
     for (int j=0 ; j<4 ; j++)
     {
 	vAvg_[j] = vAvg_[j]/np_;
@@ -217,11 +218,35 @@ void particles::calcAverage()
     }
 }
 
+double particles::planeVoidFraction(int axis, double h)
+{
+    //Calculate the void fraction on a given plane
+    // axis is the vector normal to the plane, it can either be : 0-x 1-y 2-z
+    // h is the position on axis of the plane
+    // function returns the Area of sphere on that plane
+    double x=0;
+    double r=0;
+    double r2s=0;
+    double area=0;
+
+    for (int i=0 ; i< np_ ; i++)
+    {
+	x = x_[i][axis];
+	r = r_[i];
+	if (((( x+r > h ) && ( x-r > h)) || ((x+r<h) && (x-r<h))) == false)
+	{
+	    //Particle crosses the plane
+	    r2s = r*r-(x-h)*(x-h);
+	    area += PI *r2s; 
+	}
+    }
+
+    return area;
+}
 
 //*************
 // Accessors
 //*************
-
 
 double* particles::getV(int id)	{return v_[id];}
 
@@ -234,5 +259,4 @@ std::vector<double> particles::getAverageX(){return xAvg_;}
 std::vector<double> particles::getAverageF(){return fAvg_;}
 
 std::vector<double> particles::getAverageU(){return uAvg_;}
-
 

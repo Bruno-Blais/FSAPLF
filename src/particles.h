@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 04:33:50 PM EDT
+// Last Modified: Thu 19 Jun 2014 04:52:06 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -56,6 +56,6 @@ public :
     std::vector<double> getAverageU();	// Return average fluid velocity
 
     // Related to planes
-    
+    double planeVoidFraction(int axis, double h);
 };
 #endif
