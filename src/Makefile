@@ -3,7 +3,7 @@ CFLAGS =  -g -Wall -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized
 EXEC_NAME = fsaplf
 INCLUDES = 
 LIBS = -lboost_system -lboost_filesystem
-OBJ_FILES = main.o particles.o terminal.o options.o steps.o averaging.o boxes.o 
+OBJ_FILES = main.o particles.o terminal.o options.o steps.o averaging.o boxes.o plane.o 
 INSTALL_DIR = ../test/
 
 all : $(EXEC_NAME)

@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 04:52:06 PM EDT
+// Last Modified: Fri 20 Jun 2014 09:17:48 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -32,7 +32,7 @@ private :
     double** u_;	    // Velocity of the fluid
     double*  r_;	    // radiuses
 
-//Average properties
+    //Average properties
    std::vector<double> vAvg_; // Average velocity
    std::vector<double> xAvg_; // Average position
    std::vector<double> fAvg_; // Average force

@@ -1,4 +1,4 @@
-// Last Modified: Fri 13 Jun 2014 11:15:07 AM EDT
+// Last Modified: Thu 19 Jun 2014 05:18:10 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -37,6 +37,9 @@ steps::steps()
     t_=0.;
     nstp_=0.;
     np_=0.;
+    voidfraction_=NULL;
+    dimensions_.resize(6);
+    length_.resize(6);
 }
 
 steps::~steps()

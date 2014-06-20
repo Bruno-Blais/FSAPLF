@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 03:37:45 PM EDT
+// Last Modified: Thu 19 Jun 2014 05:17:29 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -22,6 +22,7 @@
 #define OPTIONS_H
 
 #include <string>
+#include <vector>
 #include <boost/filesystem.hpp>
 #include "steps.h"
 #include "boxes.h"
@@ -36,8 +37,7 @@ class options
 private :
     bool averaging_;		    // Enables per iteration averaging
     bool trajectories_;		    // Enables storage of the particle trajectories
-    bool vPlane_;		    // Enables planes of porosity
-    bool cPlane_;		    // Enables radial planes of porosity
+    bool plane_;		    // Enables planes of porosity
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
     bool box_;			    // Enables region boxing for averaging analysis
 
@@ -53,7 +53,13 @@ private :
     // Information about boxes for averaging
     int nBox_;
     boxes *boxes_;		    // Cartesian boxes and cylindrical boxes are available
-
+    
+    // Informations about planes
+    int planeType_;
+    int planeAxis_;
+    int planeNumber_;
+    std::vector<double> dimensions_;
+    std::vector<double> length_;
 
 public :
     options(int,char**);

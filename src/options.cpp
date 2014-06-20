@@ -34,7 +34,7 @@
 namespace fs = boost::filesystem;
 using namespace std;
 
-options::options(int argc , char* argv[])
+options::options(int argc , char* argv[]) 
 {
     std::string arg;
     int i=1;
@@ -42,16 +42,18 @@ options::options(int argc , char* argv[])
     //Default constructor
     averaging_=false;
     trajectories_=false;
-    vPlane_=false;
-    cPlane_=false;
+    plane_=false;
     batch_=false;	    
     batchFreq_=999999;  
     path_="./";		    // Default path is directory of the executable
     outputPath_="./";	    // Default output is local directory
     caseLabel_="dummy";	
     extension_=".dump";	    // Default extension name
-    
 
+    // Allocate the vectors
+    dimensions_.resize(6);
+    length_.resize(6);
+    
     //Parse the options from the terminal to know which mode to enable
     while (i<argc)
     {
@@ -73,11 +75,28 @@ options::options(int argc , char* argv[])
 	    std::cout << "Region boxing analysis will take place" << std::endl;
 	    box_=true;
 	}
-	else if ("-cplane" ==arg)
+	else if ("-plane" ==arg)
 	{
-	    std::cout << "Cylindrical porosity analysis enabled" << std::endl;
-	    cPlane_=true;
-	    i++;
+	    std::cout << "Porosity analysis enabled" << std::endl;
+	    std::cout << "1- square analysis\t2- circle \t3- rectangle" << std::endl;
+	    plane_=true;
+	    planeType_=atoi(argv[i+1]);
+	    planeAxis_=atoi(argv[i+2]);
+	    planeNumber_=atoi(argv[i+3]);
+	    if (planeType_==1)
+	    {
+		dimensions_[0]=atof(argv[i+4]);
+		length_[0]=atof(argv[i+5]);
+		length_[1]=atof(argv[i+6]);
+	    }
+	    if (planeType_==2)
+	    {
+		dimensions_[0]=atof(argv[i+4]);
+		length_[0]=atof(argv[i+5]);
+		length_[1]=atof(argv[i+6]);
+	    }
+
+	    if (planeType_ <3)i+=7;
 	}
 	else if ("-ext" == arg)
 	{
@@ -107,12 +126,6 @@ options::options(int argc , char* argv[])
 	{
 	    std::cout << "Trajectories enabled" << std::endl;
 	    trajectories_=true;
-	    i++;
-	}
-	else if ("-zplane" ==arg)
-	{
-	    std::cout << "Vertical porosity analysis enabled" << std::endl;
-	    vPlane_=true;
 	    i++;
 	}
 	else
