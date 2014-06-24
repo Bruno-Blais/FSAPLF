@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 04:53:21 PM EDT
+// Last Modified: Tue 24 Jun 2014 04:44:27 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -31,6 +31,7 @@
 #include "particles.h"
 
 #define PI 3.14159265359
+#define verbose 0
 
 particles::particles() : vAvg_(4), xAvg_(4), fAvg_(4), uAvg_(4) 
 {
@@ -121,6 +122,16 @@ void particles::load(std::ifstream *ficIn)
 	tokens[11]=="fx"	&&
 	tokens[14]=="radius"	
 	) inputType=2;
+
+    if (
+	tokens[2]=="id"		&&
+	tokens[3]=="type"	&&
+	tokens[5]=="x"		&&
+	tokens[8]=="vx"		&&
+	tokens[11]=="fx"	&&
+	tokens[14]=="omegax"	&&
+	tokens[17]=="radius"
+	) inputType=3;
    
     if (inputType==0) 
 	std::cout << "A valid LAMMPS input type has not been detected, please correct this..." << std::endl;
@@ -129,7 +140,7 @@ void particles::load(std::ifstream *ficIn)
     {	
 	if (inputType==1)
 	{
-	    std::cout << "Input format : " << inputType << std::endl ;
+	    if(verbose) std::cout << "Input format : " << inputType << std::endl ;
 	    for(int i=0 ; i<np_ ; i++)
 	    {
 		(*ficIn) >> ids_[i]; 
@@ -148,7 +159,7 @@ void particles::load(std::ifstream *ficIn)
 	
 	if (inputType==2)
 	{
-	    std::cout << "Input format : " << inputType << std::endl; 
+	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
 	     for(int i=0 ; i<np_ ; i++)
 	    {
 		//Cast into the right variable
@@ -157,6 +168,24 @@ void particles::load(std::ifstream *ficIn)
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
+		(*ficIn) >> r_[i]; 
+
+		//Read a line
+		std::getline((*ficIn),buffer);
+	    }
+	}
+
+	if (inputType==3)
+	{
+	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
+	     for(int i=0 ; i<np_ ; i++)
+	    {
+		(*ficIn) >> ids_[i]; 
+		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
+	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
 		(*ficIn) >> r_[i]; 
 
 		//Read a line
@@ -218,39 +247,23 @@ void particles::calcAverage()
     }
 }
 
-double particles::planeVoidFraction(int axis, double h)
-{
-    //Calculate the void fraction on a given plane
-    // axis is the vector normal to the plane, it can either be : 0-x 1-y 2-z
-    // h is the position on axis of the plane
-    // function returns the Area of sphere on that plane
-    double x=0;
-    double r=0;
-    double r2s=0;
-    double area=0;
 
-    for (int i=0 ; i< np_ ; i++)
-    {
-	x = x_[i][axis];
-	r = r_[i];
-	if (((( x+r > h ) && ( x-r > h)) || ((x+r<h) && (x-r<h))) == false)
-	{
-	    //Particle crosses the plane
-	    r2s = r*r-(x-h)*(x-h);
-	    area += PI *r2s; 
-	}
-    }
-
-    return area;
-}
 
 //*************
 // Accessors
 //*************
 
+int particles::getNumber() {return np_;}
+
 double* particles::getV(int id)	{return v_[id];}
 
 double* particles::getX(int id) {return x_[id];}
+
+double* particles::getRArray() {return r_;}
+
+double** particles::getXArray() {return x_;}
+
+double** particles::getVArray() {return v_;}
 
 std::vector<double> particles::getAverageV(){return vAvg_;}
 

@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 03:38:08 PM EDT
+// Last Modified: Tue 24 Jun 2014 04:44:44 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -53,22 +53,33 @@ int main(int argc, char* argv[])
     // If averaging if on, allocate that up
     if(opt.getAveraging()) avg.allocate(opt.getNumberOfFiles());
 
-
     // Transfer information to each individual step
     opt.setSteps(stp);
 
+    // Parallelism will be done on this loop using openmp
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
-	    stp[i].load();
 
+	    stp[i].load();
+	    std::cout << "File iteration : "<<stp[i].getIter()<<std::endl;
 	    if (opt.getAveraging())
 	    {
 		    stp[i].average();
+		    avg.setIter(i,stp[i].getIter());
 		    avg.setV(i,stp[i].getAverageV());
 		    avg.setX(i,stp[i].getAverageX());
 		    avg.setF(i,stp[i].getAverageF());
 	    }
-	    stp[i].print();
+
+	    if (opt.getPlaneOn())
+	    {
+		//Copy the plane class to the local steps
+		stp[i].setPlane(opt.getPlane());
+		stp[i].giveParticlesToPlane();
+		stp[i].planeAnalysis();
+		stp[i].writePlane(opt.getOutputPath(), opt.getLabel());
+	    }
+	   // stp[i].print();
     }
 
     // Output of global results

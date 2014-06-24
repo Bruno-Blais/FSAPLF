@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 05:17:29 PM EDT
+// Last Modified: Mon 23 Jun 2014 10:11:31 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -25,6 +25,7 @@
 #include <vector>
 #include <boost/filesystem.hpp>
 #include "steps.h"
+#include "plane.h"
 #include "boxes.h"
 
 
@@ -37,9 +38,11 @@ class options
 private :
     bool averaging_;		    // Enables per iteration averaging
     bool trajectories_;		    // Enables storage of the particle trajectories
-    bool plane_;		    // Enables planes of porosity
+    bool planeOn_;		    // Enables planes of porosity
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
     bool box_;			    // Enables region boxing for averaging analysis
+
+    double dt_;			    // Timestep
 
     std::string caseLabel_;	    // Label to give to the post-processing of the information
     std::string path_;		    // Path of the folder to post-process
@@ -55,11 +58,7 @@ private :
     boxes *boxes_;		    // Cartesian boxes and cylindrical boxes are available
     
     // Informations about planes
-    int planeType_;
-    int planeAxis_;
-    int planeNumber_;
-    std::vector<double> dimensions_;
-    std::vector<double> length_;
+    plane plane_;
 
 public :
     options(int,char**);
@@ -70,9 +69,13 @@ public :
 
     //Accessors
     bool getAveraging();
+    bool getPlaneOn();
     int getNumberOfFiles();	    // Accessor for the number of files
+    double getDt();
     std::string getLabel();
     std::string getPath();
     std::string getOutputPath();
+
+    plane getPlane();
 };
 #endif

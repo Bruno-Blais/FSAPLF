@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 05:18:10 PM EDT
+// Last Modified: Tue 24 Jun 2014 03:39:35 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -29,6 +29,9 @@
 ********************/
 #include "options.h"
 #include "steps.h"
+#include "plane.h"
+
+#define verbose 0
 
 steps::steps()
 {
@@ -37,9 +40,6 @@ steps::steps()
     t_=0.;
     nstp_=0.;
     np_=0.;
-    voidfraction_=NULL;
-    dimensions_.resize(6);
-    length_.resize(6);
 }
 
 steps::~steps()
@@ -56,6 +56,11 @@ void steps::setPath(std::string fname)
 void steps::setNumber(int i)
 {
     nstp_=i;
+}
+
+void steps::setPlane(plane p)
+{
+    plane_=p;
 }
 
 void steps::print()
@@ -84,7 +89,7 @@ void steps::load()
     }
     else
     {
-	std::cout << std::endl << "Opening file : " << fname_ << std::endl;
+	if(verbose) std::cout << std::endl << "Opening file : " << fname_ << std::endl;
 
 	//Remove garbage line 1
 	std::getline(fic_in,buffer);
@@ -104,10 +109,39 @@ void steps::load()
 	particles_.load(&fic_in);
     }
 }
+
+void steps::setTime(double dt)
+{
+    t_ = nit_ * dt;
+}
+
 void steps::average()
 {
     particles_.calcNorm();
     particles_.calcAverage();
+}
+
+void steps::giveParticlesToPlane()
+{
+    plane_.setNumber(np_);
+    plane_.setParticles(particles_.getRArray(), particles_.getXArray());
+}
+
+void steps::planeAnalysis()
+{
+    plane_.analyse();
+}
+
+void steps::writePlane(std::string path, std::string label)
+{
+    plane_.write(path,label, nstp_);
+}
+
+//Accesors
+
+int steps::getIter()
+{
+    return nit_;
 }
 
 std::vector<double> steps::getAverageV()

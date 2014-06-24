@@ -26,17 +26,40 @@
 class plane
 {
 private :
-    int np_;	            // Number of particles
-    double** x_;	    // Positions vector
-    double*  r_;	    // radiuses
+    int planeType_;			// Plane type
+    int planeAxis_;			// Plane axis 
+    int planeNumber_;			// Number of surfaces in a analysis
+    std::vector<double> dimensions_;	// Dimensions
+    std::vector<double> length_;	// Intervals to cover
+    int	np_;				// Number of particles - allows to loop over the arrays
+    double*  r_;			// radiuses
+    double** x_;			// Positions vector
+    double* pos_;			// Position on the axis that the plane is calculated
+    double* voidfraction_;		// Fraction of fluid on the plane
 
 public :
     plane();
     ~plane();
-    void setParticles(double**, double*);		// Allocate the required memory for the particles array
-    void print();			// Print content of the class
+
+    void set(int, int, int);			    // set the plane mode
+    void setDimensions(double);			    // Sets the dimensions of the plane
+    void setLength(double, double);		    // Sets the interval over which the analysis takes place (bottom, top, etc)
+    void setIter(int);				    // Set the iteration number
+    void setNumber(int);			    // Set the number of particles on which the analysis is carried out
+    void setParticles(double*, double**);	    // Allocate the required memory for the particles array
+
+    void print();				    // Print content of the class
+    void analyse();				    // Carry the analysis
+    double planeVoidFraction(int,double);	    // Calculate the void fraction on a simple plane of constant normal
+						    // along an axis
+    void write(std::string, std::string, int);	    // Write the results to a file
 
     // Related to planes
     //double sectionVoidFraction(int axis, double h);
+
+    //Accessors functions
+    int getType();
+    int getAxis();
+    int getNumber();
 };
 #endif

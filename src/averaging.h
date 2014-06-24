@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 03:34:33 PM EDT
+// Last Modified: Tue 24 Jun 2014 03:38:19 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -37,6 +37,7 @@ public :
     averaging();
     ~averaging();
     void allocate(int);
+    void setIter(int, int);
     void setV(int, std::vector<double>);
     void setX(int, std::vector<double>);
     void setF(int, std::vector<double>);

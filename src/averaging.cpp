@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 04:13:10 PM EDT
+// Last Modified: Tue 24 Jun 2014 04:08:39 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -41,7 +41,6 @@ averaging::averaging()
 
 averaging::~averaging()
 {
-    std::cout << "Averaging destructor?" << std::endl;
     for (int i =0 ; i<n_ ;i++)
     {
 	delete v_[i];
@@ -87,6 +86,11 @@ void averaging::allocate(int n)
 
 }
 
+void averaging::setIter(int k, int iter)
+{
+    nIter_[k]=iter; 
+}
+
 void averaging::setV (int k, std::vector<double> v)
 {
     for (int i=0 ; i<4 ; i++)
@@ -107,14 +111,14 @@ void averaging::setF (int k, std::vector<double> v)
 
 void averaging::writeFile(std::string path, std::string label)
 {
-    std::string filename = path+label+"_averaged";
+    std::string filename = path+"/"+label+"_averaged";
     std::ofstream ficOut(filename.c_str());
     for (int i=0 ; i<n_ ; i++)
     {
 	ficOut << std::setw(WIDTH);
 	ficOut << std::setprecision(PRES);
-	ficOut	<< nIter_[i] << " "  
-		<< std::setw(WIDTH) << std::setprecision(PRES) << t_[i] << " ";
+	ficOut	<< nIter_[i] << " " ;  
+	//	<< std::setw(WIDTH) << std::setprecision(PRES) << t_[i] << " ";
 	for (int j=0 ; j<4 ; j++) ficOut << std::setw(WIDTH) << std::setprecision(PRES) << x_[i][j] << " ";
 	for (int j=0 ; j<4 ; j++) ficOut << std::setw(WIDTH) << std::setprecision(PRES) << v_[i][j] << " ";
 	for (int j=0 ; j<4 ; j++) ficOut << std::setw(WIDTH) << std::setprecision(PRES) << f_[i][j] << " ";
@@ -122,4 +126,5 @@ void averaging::writeFile(std::string path, std::string label)
 	ficOut << std::setw(WIDTH) << std::setprecision(PRES) << u_[i][3];
 	ficOut << std::endl;
     }
+    ficOut.close();
 }

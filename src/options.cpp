@@ -31,6 +31,8 @@
 #include "options.h"
 #include "steps.h"
 
+#define verbose 0
+
 namespace fs = boost::filesystem;
 using namespace std;
 
@@ -42,7 +44,7 @@ options::options(int argc , char* argv[])
     //Default constructor
     averaging_=false;
     trajectories_=false;
-    plane_=false;
+    planeOn_=false;
     batch_=false;	    
     batchFreq_=999999;  
     path_="./";		    // Default path is directory of the executable
@@ -50,10 +52,6 @@ options::options(int argc , char* argv[])
     caseLabel_="dummy";	
     extension_=".dump";	    // Default extension name
 
-    // Allocate the vectors
-    dimensions_.resize(6);
-    length_.resize(6);
-    
     //Parse the options from the terminal to know which mode to enable
     while (i<argc)
     {
@@ -75,29 +73,7 @@ options::options(int argc , char* argv[])
 	    std::cout << "Region boxing analysis will take place" << std::endl;
 	    box_=true;
 	}
-	else if ("-plane" ==arg)
-	{
-	    std::cout << "Porosity analysis enabled" << std::endl;
-	    std::cout << "1- square analysis\t2- circle \t3- rectangle" << std::endl;
-	    plane_=true;
-	    planeType_=atoi(argv[i+1]);
-	    planeAxis_=atoi(argv[i+2]);
-	    planeNumber_=atoi(argv[i+3]);
-	    if (planeType_==1)
-	    {
-		dimensions_[0]=atof(argv[i+4]);
-		length_[0]=atof(argv[i+5]);
-		length_[1]=atof(argv[i+6]);
-	    }
-	    if (planeType_==2)
-	    {
-		dimensions_[0]=atof(argv[i+4]);
-		length_[0]=atof(argv[i+5]);
-		length_[1]=atof(argv[i+6]);
-	    }
 
-	    if (planeType_ <3)i+=7;
-	}
 	else if ("-ext" == arg)
 	{
 	    extension_ = argv[i+1];
@@ -122,11 +98,33 @@ options::options(int argc , char* argv[])
 	    std::cout << "Dumps path : " << path_ << std::endl; 
 	    i+=2;
 	}
+	else if ("-plane" ==arg)
+	{
+	    std::cout << "Porosity analysis enabled" << std::endl;
+	    std::cout << "Arguments : Type, axis, number of planes, dimension, beggining, end"<<std::endl;
+	    std::cout << "Modes: 1- square analysis\t2- circle \t3- rectangle" << std::endl;
+	    planeOn_=true;
+	   
+	    plane_.set(atoi(argv[i+1]),atoi(argv[i+2]),atoi(argv[i+3]));
+	    if (plane_.getType() <3)
+	    {
+		plane_.setDimensions(atof(argv[i+4]));
+		plane_.setLength(atof(argv[i+5]),atof(argv[i+6]));
+	    }
+
+	    if (plane_.getType() <3)i+=7;
+	}
 	else if ("-trajectory" == arg )
 	{
 	    std::cout << "Trajectories enabled" << std::endl;
 	    trajectories_=true;
 	    i++;
+	}
+	else if ("-dt" ==arg)
+	{
+	    dt_ = atof(argv[i+1]);
+	    std::cout << "Timestep fixed at : " << dt_ << std::endl;
+	    i+=2;
 	}
 	else
 	{
@@ -138,7 +136,6 @@ options::options(int argc , char* argv[])
 
 options::~options()
 {
-    std::cout << "Trying to destroy the options ? " << std::endl;
     filesPath_.clear();
 }
 
@@ -157,7 +154,7 @@ void options::getFilesIdentification()
 	// Test the validity of the path
 	if (fs::is_directory(p))      
 	{
-	    std::cout << p << " is a valid directory\n";
+	    if(verbose) std::cout << p << " is a valid directory\n";
 
 	    copy(fs::directory_iterator(p), fs::directory_iterator(), back_inserter(filesPath_));
 
@@ -181,10 +178,10 @@ void options::getFilesIdentification()
 	    }
 
 	    it=filesPath_.begin();
-	    std::cout << "Files taken into account are : " << std::endl;
+	    if (verbose) std::cout << "Files taken into account are : " << std::endl;
 	    while (it<filesPath_.end())
 	    {
-		cout << it->string() << std::endl;
+		if(verbose) cout << it->string() << std::endl;
 		it++;
 		nFiles_++;
 	    }
@@ -197,30 +194,24 @@ void options::getFilesIdentification()
 
 }
 
-int options::getNumberOfFiles()
-{
-    return nFiles_;
-}
 
-bool options::getAveraging()
-{
-    return averaging_;
-}
+// Accessors
 
-std::string options::getLabel()
-{
-    return caseLabel_;
-}
+bool options::getAveraging(){return averaging_;}
 
-std::string options::getPath()
-{
-    return path_;
-}
+bool options::getPlaneOn(){return planeOn_;}
 
-std::string options::getOutputPath()
-{
-    return outputPath_;
-}
+int options::getNumberOfFiles(){return nFiles_;}
+
+double options::getDt(){return dt_;}
+
+std::string options::getLabel(){return caseLabel_;}
+
+std::string options::getPath(){return path_;}
+
+std::string options::getOutputPath(){return outputPath_;}
+
+plane options::getPlane(){return plane_;}
 
 void options::setSteps(steps* stp)
 {
@@ -229,6 +220,7 @@ void options::setSteps(steps* stp)
     {
 	stp[i].setPath(filesPath_[i].string());
 	stp[i].setNumber(i);
+	if(planeOn_) stp[i].setPlane(plane_);
     }
 }
 

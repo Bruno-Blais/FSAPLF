@@ -1,4 +1,4 @@
-// Last Modified: Thu 19 Jun 2014 05:10:59 PM EDT
+// Last Modified: Tue 24 Jun 2014 03:39:01 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include "particles.h"
+#include "plane.h"
 
 #ifndef STEPS_H
 #define STEPS_H 
@@ -36,23 +37,24 @@ private :
     * This will eventually me pushed all into a different class maybe?
     */
 
-    int nPlane_;			// Number of planes
-    int planeType_;			// Type of planes (1- square 2-circles)
-    std::vector<double> dimensions_;	// Tools to calculate the size of the plane
-    std::vector<double> length_;	// Beggining and end in all axes
-    double* voidfraction_;		// fraction of solid particles
-    
+    plane plane_;
 
 public :
     steps();
     ~steps();
     void setPath(std::string fname);
-    void setNumber(int);		// Set the index of the step
-    void print();			// Print the entire content of the class
-    void load();			// Load the corresponding data file
-    void average();			// Averaging function
+    void setNumber(int);			// Set the index of the step
+    void setTime(double);			// Set the value of the time using the time step number and dt
+    void setPlane(plane);			// Set the plane for plane analysis 
+    void print();				// Print the entire content of the class
+    void load();				// Load the corresponding data file
+    void average();				// Averaging function
+    void giveParticlesToPlane();		// Give a copy of the particle pointers to the planes
+    void planeAnalysis();			// Do the plane analysis
+    void writePlane(std::string, std::string);
 
     // Accessors
+    int getIter();
     std::vector<double> getAverageV();
     std::vector<double> getAverageX();
     std::vector<double> getAverageF();
