@@ -1,4 +1,4 @@
-// Last Modified: Mon 23 Jun 2014 10:29:49 AM EDT
+// Last Modified: Thu 26 Jun 2014 04:12:14 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -48,7 +48,8 @@ public :
 
     // Related to averaging
     void calcAverage();			// Calculate the average of each variables
-
+    std::vector<double> calcPercentageMax(double**, int, double);
+    
     // Accessors
     int getNumber();
     double* getV(int);			// Access velocity
@@ -61,6 +62,5 @@ public :
     std::vector<double> getAverageX();	// Return average position
     std::vector<double> getAverageF();	// Return average force
     std::vector<double> getAverageU();	// Return average fluid velocity
-
 };
 #endif

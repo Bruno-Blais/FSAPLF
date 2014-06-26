@@ -1,4 +1,4 @@
-// Last Modified: Tue 24 Jun 2014 04:44:27 PM EDT
+// Last Modified: Thu 26 Jun 2014 04:09:53 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -33,7 +33,7 @@
 #define PI 3.14159265359
 #define verbose 0
 
-particles::particles() : vAvg_(4), xAvg_(4), fAvg_(4), uAvg_(4) 
+particles::particles() : vAvg_(24), xAvg_(24), fAvg_(24), uAvg_(24) 
 {
     np_ = 0;
     ids_ = NULL;
@@ -73,7 +73,6 @@ void particles::allocate(int n)
     x_ = new double*[n];
     f_ = new double*[n];
     u_ = new double*[n];
-
 
     for (int i = 0 ; i < np_ ; i++)
     {
@@ -227,6 +226,31 @@ void particles::calcNorm()
 
 void particles::calcAverage()
 {
+    int skip=0;
+    double perc=0.99;
+    std::vector<double> tempVec(2);
+
+
+    //Flush everything back to 0
+    std::fill(vAvg_.begin(), vAvg_.end(), 0);
+    std::fill(xAvg_.begin(), xAvg_.end(), 0);
+    std::fill(fAvg_.begin(), fAvg_.end(), 0);
+    std::fill(uAvg_.begin(), uAvg_.end(), 0);
+
+    //Initiate the maximums to -99999 and the Minimums to 99999
+    for (int j=8 ; j<12; j++)
+    {
+	vAvg_[j]=9999.;
+	vAvg_[j+4]=-9999.;
+	xAvg_[j]=9999.;
+	xAvg_[j+4]=-9999.;
+	fAvg_[j]=9999.;
+	fAvg_[j+4]=-9999.;
+	uAvg_[j]=9999.;
+	uAvg_[j+4]=-9999.;
+    }
+
+
     // Calculate the average of each variable and store them in a vector array
     for (int i=0 ; i< np_ ; i++)
     {
@@ -237,7 +261,29 @@ void particles::calcAverage()
 	    fAvg_[j] += f_[i][j];
 	    uAvg_[j] += u_[i][j];
 	}
+
+	// Calculate the maximum
+	skip=12;
+	for (int j=0 ; j< 4 ; j++)
+	{
+	    if (v_[i][j] > vAvg_[skip+j]) vAvg_[skip+j]=v_[i][j];
+	    if (x_[i][j] > xAvg_[skip+j]) xAvg_[skip+j]=x_[i][j];		
+	    if (f_[i][j] > fAvg_[skip+j]) fAvg_[skip+j]=f_[i][j];
+	    if (u_[i][j] > uAvg_[skip+j]) uAvg_[skip+j]=u_[i][j];
+	}
+
+	// Calculate the minimum
+	skip=8;
+	for (int j=0 ; j< 4 ; j++)
+	{
+	    if (v_[i][j] < vAvg_[skip+j]) vAvg_[skip+j]=v_[i][j];
+	    if (x_[i][j] < xAvg_[skip+j]) xAvg_[skip+j]=x_[i][j];		
+	    if (f_[i][j] < fAvg_[skip+j]) fAvg_[skip+j]=f_[i][j];
+	    if (u_[i][j] < uAvg_[skip+j]) uAvg_[skip+j]=u_[i][j];
+	}
     }
+
+    // Reduce the sums to get the average value
     for (int j=0 ; j<4 ; j++)
     {
 	vAvg_[j] = vAvg_[j]/np_;
@@ -245,9 +291,88 @@ void particles::calcAverage()
 	fAvg_[j] = fAvg_[j]/np_;
 	uAvg_[j] = uAvg_[j]/np_;
     }
+
+    // Calculate the standard deviation
+    // sqrt( 1/N sum (x^2) - xbar^2 ) 
+    skip=4;
+    for (int i=0; i<np_ ; i++)
+    {
+	// Calculate squared sum for standard deviation
+	for (int j=0 ; j< 4 ;j++)
+	{
+	    vAvg_[j+skip] += pow(v_[i][j]-vAvg_[j], 2);
+	    xAvg_[j+skip] += pow(x_[i][j]-xAvg_[j], 2);
+	    fAvg_[j+skip] += pow(f_[i][j]-fAvg_[j], 2);
+	    uAvg_[j+skip] += pow(u_[i][j]-uAvg_[j], 2);
+	}
+    }
+
+    for (int j=0 ; j < 4 ; j++)
+    {
+	vAvg_[j+skip] += sqrt(vAvg_[j+skip]/np_);
+	xAvg_[j+skip] += sqrt(xAvg_[j+skip]/np_);
+	fAvg_[j+skip] += sqrt(fAvg_[j+skip]/np_);
+	uAvg_[j+skip] += sqrt(uAvg_[j+skip]/np_);
+    }
+
+    skip=16;
+    // Calculate the 99% max and min
+   for (int j=0 ; j < 4 ; j++)
+   {
+	tempVec=calcPercentageMax(x_, j, perc);
+	xAvg_[j+skip]=tempVec[0];
+	xAvg_[j+skip+4]=tempVec[1];
+
+	tempVec=calcPercentageMax(v_, j, perc);
+	vAvg_[j+skip]=tempVec[0];
+	vAvg_[j+skip+4]=tempVec[1];
+
+	tempVec=calcPercentageMax(f_, j, perc);
+	fAvg_[j+skip]=tempVec[0];
+	fAvg_[j+skip+4]=tempVec[1];
+
+	tempVec=calcPercentageMax(u_, j, perc);
+    	uAvg_[j+skip]=tempVec[0];
+	uAvg_[j+skip+4]=tempVec[1];
+   }
 }
 
 
+
+std::vector<double> particles::calcPercentageMax(double** x, int dim, double perc)
+{
+    // This function extracts the maximal and minimal percentage amount. For instance, if you have 100 data point
+    // and your specify perc is 0.99, it will go and grab the 99 maximal and the 99 minimal data point of each thing
+    // and output them as a vector
+    int index;
+    std::vector<double> percMax(2);
+    
+    // Create vector->double array of sufficient size
+    std::vector<double> tempArray(np_);
+
+    // Dump double array into the vector
+    for (int i=0 ; i < np_ ; i++)
+    {
+	tempArray[i] = x[i][dim];
+    }
+
+    // Sort the baby
+    std::sort (tempArray.begin(), tempArray.end());   	
+
+    // Find the index correspondant to max perc
+    index = int(perc*np_);
+    
+    // Output
+    percMax[1]=tempArray[index];
+
+    // Find index corresponding the min perc
+    index = int((1.-perc) * np_);
+
+    // Output
+    percMax[0]=tempArray[index];
+
+    return percMax;
+}
 
 //*************
 // Accessors

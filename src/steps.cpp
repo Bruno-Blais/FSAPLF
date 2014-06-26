@@ -1,4 +1,4 @@
-// Last Modified: Tue 24 Jun 2014 03:39:35 PM EDT
+// Last Modified: Wed 25 Jun 2014 03:17:54 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -134,7 +134,7 @@ void steps::planeAnalysis()
 
 void steps::writePlane(std::string path, std::string label)
 {
-    plane_.write(path,label, nstp_);
+    plane_.write(path,label, nit_);
 }
 
 //Accesors

@@ -1,4 +1,4 @@
-// Last Modified: Tue 24 Jun 2014 03:38:19 PM EDT
+// Last Modified: Thu 26 Jun 2014 03:14:23 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -42,5 +42,6 @@ public :
     void setX(int, std::vector<double>);
     void setF(int, std::vector<double>);
     void writeFile(std::string, std::string);
+    void writeSingleFile(std::string, std::string, std::string, double**, int);
 };
 #endif

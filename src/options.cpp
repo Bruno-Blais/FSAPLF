@@ -31,7 +31,7 @@
 #include "options.h"
 #include "steps.h"
 
-#define verbose 0
+#define verbose 1
 
 namespace fs = boost::filesystem;
 using namespace std;
@@ -162,7 +162,6 @@ void options::getFilesIdentification()
 
 	    //Loop trough the vector to remove files that do not end in EXTENSION 
 	    vecPath::iterator it(filesPath_.begin());
-	    vecPath::iterator prev;
 	    while (it<filesPath_.end())
 	    {	
 		local = it->string();
@@ -176,7 +175,7 @@ void options::getFilesIdentification()
 		    it++;
 		}
 	    }
-
+	    
 	    it=filesPath_.begin();
 	    if (verbose) std::cout << "Files taken into account are : " << std::endl;
 	    while (it<filesPath_.end())
