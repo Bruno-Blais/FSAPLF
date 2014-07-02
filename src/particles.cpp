@@ -1,4 +1,4 @@
-// Last Modified: Thu 26 Jun 2014 04:09:53 PM EDT
+// Last Modified: Tue 01 Jul 2014 03:41:20 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -164,6 +164,7 @@ void particles::load(std::ifstream *ficIn)
 		//Cast into the right variable
 		(*ficIn) >> ids_[i]; 
 		(*ficIn) >> buffer;
+		(*ficIn) >> buffer;
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
@@ -250,7 +251,6 @@ void particles::calcAverage()
 	uAvg_[j+4]=-9999.;
     }
 
-
     // Calculate the average of each variable and store them in a vector array
     for (int i=0 ; i< np_ ; i++)
     {
@@ -309,10 +309,10 @@ void particles::calcAverage()
 
     for (int j=0 ; j < 4 ; j++)
     {
-	vAvg_[j+skip] += sqrt(vAvg_[j+skip]/np_);
-	xAvg_[j+skip] += sqrt(xAvg_[j+skip]/np_);
-	fAvg_[j+skip] += sqrt(fAvg_[j+skip]/np_);
-	uAvg_[j+skip] += sqrt(uAvg_[j+skip]/np_);
+	vAvg_[j+skip] = sqrt(vAvg_[j+skip]/np_);
+	xAvg_[j+skip] = sqrt(xAvg_[j+skip]/np_);
+	fAvg_[j+skip] = sqrt(fAvg_[j+skip]/np_);
+	uAvg_[j+skip] = sqrt(uAvg_[j+skip]/np_);
     }
 
     skip=16;

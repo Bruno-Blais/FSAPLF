@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Jun 2014 03:21:24 PM EDT
+// Last Modified: Wed 02 Jul 2014 11:37:40 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -19,6 +19,7 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -33,6 +34,29 @@ void terminalInit()
     cout << "******************************************************************" << endl;
     cout << endl;
 }
+
+
+void terminalProgressInit(int n)
+{
+    cout << endl ;
+    cout << "Progress Bar" << endl;
+    cout << "0%   ";
+    for (int i=0 ; i<(n/2-10) ; i++)
+    {
+    cout << " " ;
+    }
+    cout<<" 100%"<< endl;
+}
+
+void terminalProgress(int i, int n)
+{
+    if (i%2==0)
+    {
+	cout << "|" ;
+	cout.flush();
+    }
+}
+
 
 
 void terminalClose()

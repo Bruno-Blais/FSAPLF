@@ -31,7 +31,7 @@
 #include "options.h"
 #include "steps.h"
 
-#define verbose 1
+#define verbose 0
 
 namespace fs = boost::filesystem;
 using namespace std;
