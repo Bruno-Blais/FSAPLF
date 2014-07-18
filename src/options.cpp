@@ -65,7 +65,8 @@ options::options(int argc , char* argv[])
 	else if ("-batch" == arg)
 	{
 	    batchFreq_ = atoi(argv[i+1]);
-	    std::cout << "Memory will be flushed every  : " << batchFreq_ << std::endl; 
+	    std::cout << "Memory will be flushed every  : " << batchFreq_ << std::endl;
+	    std::cerr << "This functionnality is not implemented yet..." << std::endl;
 	    i+=2;
 	}
 	else if("-box" ==arg)
@@ -118,7 +119,15 @@ options::options(int argc , char* argv[])
 	{
 	    std::cout << "Trajectories enabled" << std::endl;
 	    trajectories_=true;
-	    i++;
+	    trajectoriesType_=atoi(argv[i+1]);
+	    if (trajectoriesType_ == 1)
+	    {
+		i++;
+	    }
+	    else
+	    {
+		std::cerr << "You are trying to use a trajectories type that is not currently implemented, TERMINATION";
+	    }
 	}
 	else if ("-dt" ==arg)
 	{
@@ -200,7 +209,11 @@ bool options::getAveraging(){return averaging_;}
 
 bool options::getPlaneOn(){return planeOn_;}
 
+bool options::getTrajectories(){return trajectories_;}
+
 int options::getNumberOfFiles(){return nFiles_;}
+
+int options::getTrajectoriesType(){return trajectoriesType_;}
 
 double options::getDt(){return dt_;}
 

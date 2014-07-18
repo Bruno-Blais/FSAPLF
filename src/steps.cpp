@@ -1,4 +1,4 @@
-// Last Modified: Wed 25 Jun 2014 03:17:54 PM EDT
+// Last Modified: Wed 02 Jul 2014 04:47:41 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -142,6 +142,21 @@ void steps::writePlane(std::string path, std::string label)
 int steps::getIter()
 {
     return nit_;
+}
+
+int steps::getNumberParticles()
+{
+    return np_;
+}
+
+double** steps::getXArray()
+{
+    return particles_.getXArray();
+}
+
+std::vector<int> steps::getIds()
+{
+    return particles_.getIds();
 }
 
 std::vector<double> steps::getAverageV()

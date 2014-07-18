@@ -1,4 +1,4 @@
-// Last Modified: Tue 24 Jun 2014 03:39:01 PM EDT
+// Last Modified: Wed 02 Jul 2014 04:47:29 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -22,7 +22,7 @@
 class steps
 {
 private :
-    particles particles_;		// Informatio about the particles
+    particles particles_;		// Information about the particles
     std::string fname_;			// File name
     int nit_;				// Iteration number
     int nstp_;				// Step number
@@ -36,7 +36,6 @@ private :
     * do not cover the entire domain
     * This will eventually me pushed all into a different class maybe?
     */
-
     plane plane_;
 
 public :
@@ -55,6 +54,11 @@ public :
 
     // Accessors
     int getIter();
+    int getNumberParticles();
+
+    double** getXArray();
+
+    std::vector<int>	getIds();
     std::vector<double> getAverageV();
     std::vector<double> getAverageX();
     std::vector<double> getAverageF();

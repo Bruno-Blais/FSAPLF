@@ -1,4 +1,4 @@
-// Last Modified: Mon 23 Jun 2014 10:11:31 AM EDT
+// Last Modified: Wed 02 Jul 2014 02:21:51 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -60,6 +60,9 @@ private :
     // Informations about planes
     plane plane_;
 
+    // Information about trajectories
+    int trajectoriesType_;
+
 public :
     options(int,char**);
     ~options();
@@ -70,6 +73,8 @@ public :
     //Accessors
     bool getAveraging();
     bool getPlaneOn();
+    bool getTrajectories();
+    int getTrajectoriesType();
     int getNumberOfFiles();	    // Accessor for the number of files
     double getDt();
     std::string getLabel();

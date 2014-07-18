@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 11:35:04 AM EDT
+// Last Modified: Wed 02 Jul 2014 11:48:48 AM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -16,7 +16,7 @@
 
 void terminalInit();
 void terminalProgressInit(int);
-void terminalProgress(int,int);
+void terminalProgress(int);
 void terminalClose();
 
 #endif

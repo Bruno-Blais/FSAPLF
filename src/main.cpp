@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 11:34:55 AM EDT
+// Last Modified: Wed 02 Jul 2014 04:55:37 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -20,6 +20,7 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <omp.h>
 
 /********************
 * HEADER INCLUDES
@@ -29,6 +30,7 @@
 #include "particles.h"
 #include "averaging.h"
 #include "terminal.h"
+#include "trajectories.h"
 
 using namespace std;
 
@@ -37,6 +39,7 @@ int main(int argc, char* argv[])
     // Declarations
     steps* stp;
     averaging avg;
+    trajectories trj;
 
     // Initilization of the code
     terminalInit();
@@ -58,12 +61,19 @@ int main(int argc, char* argv[])
 
     // Begin progress bar
     terminalProgressInit(opt.getNumberOfFiles());
-
-    // Parallelism will be done on this loop using openmp
+    
+    // Parallelism will be done on this loop using openmp, it already works, it just needs to be enabled
+    //#pragma omp parallel for
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
 	    stp[i].load();
 	    //std::cout << "File iteration :\t"<<stp[i].getIter()<<std::endl;
+	   
+	    if (opt.getTrajectories() && i==0)
+	    {
+		trj.allocate(opt.getTrajectoriesType(), opt.getNumberOfFiles(),stp[i].getNumberParticles(),stp[i].getIds());
+	    }
+	   
 	    if (opt.getAveraging())
 	    {
 		    stp[i].average();
@@ -81,10 +91,15 @@ int main(int argc, char* argv[])
 		stp[i].planeAnalysis();
 		stp[i].writePlane(opt.getOutputPath(), opt.getLabel());
 	    }
+
+	    if (opt.getTrajectories())
+	    {
+		trj.setStep(i, stp[i].getNumberParticles(),stp[i].getIds(),stp[i].getXArray());
+	    }
 	   // stp[i].print();
 
 	    // Write progress bar
-	   terminalProgress(i,opt.getNumberOfFiles());
+	   terminalProgress(i);
     }
 
     // Output of global results
@@ -94,3 +109,5 @@ int main(int argc, char* argv[])
     terminalClose();
     return 0; 
 }
+
+
