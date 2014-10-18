@@ -1,4 +1,4 @@
-// Last Modified: Mon 04 Aug 2014 10:02:58 AM CEST
+// Last Modified: Sat 18 Oct 2014 05:47:21 PM CEST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -151,6 +151,18 @@ void particles::load(std::ifstream *ficIn)
 	tokens[18]=="f_uf[1]"	&&
 	tokens[21]=="radius"
 	) inputType=5;
+
+     if (
+        tokens[2]=="id"		&&
+        tokens[3]=="type"	&&
+	tokens[5]=="x"		&&
+	tokens[8]=="vx"		&&
+	tokens[11]=="fx"	&&
+	tokens[14]=="f_uf[1]"   &&
+        tokens[18]=="radius"    
+	) inputType=6;
+
+
    
     if (inputType==0) 
 	std::cout << "A valid LAMMPS input type has not been detected, please correct this..." << std::endl;
@@ -244,6 +256,25 @@ void particles::load(std::ifstream *ficIn)
 	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
 		for (int j=0 ; j<4 ; j++) (*ficIn) >> buffer;
+		(*ficIn) >> r_[i]; 
+
+		//Read a line
+		std::getline((*ficIn),buffer);
+	    }
+	}
+        
+        if (inputType==6)
+	{
+	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
+	     for(int i=0 ; i<np_ ; i++)
+	    {
+		//Cast into the right variable
+		(*ficIn) >> ids_[i]; 
+		(*ficIn) >> buffer;
+		(*ficIn) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
 		(*ficIn) >> r_[i]; 
 
 		//Read a line
