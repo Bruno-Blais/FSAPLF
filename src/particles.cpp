@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 02:28:53 PM EDT
+// Last Modified: Mon 04 Aug 2014 10:02:58 AM CEST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -131,6 +131,26 @@ void particles::load(std::ifstream *ficIn)
 	tokens[14]=="omegax"	&&
 	tokens[17]=="radius"
 	) inputType=3;
+    
+    if (
+	tokens[2]=="id"		&&
+	tokens[3]=="type"	&&
+	tokens[5]=="x"		&&
+	tokens[11]=="vx"	&&
+	tokens[14]=="fx"	&&
+	tokens[17]=="f_uf[1]"	&&
+	tokens[20]=="radius"
+	) inputType=4;
+
+     if (
+	tokens[2]=="id"		&&
+	tokens[3]=="type"	&&
+	tokens[5]=="x"		&&
+	tokens[11]=="vx"	&&
+	tokens[14]=="fx"	&&
+	tokens[18]=="f_uf[1]"	&&
+	tokens[21]=="radius"
+	) inputType=5;
    
     if (inputType==0) 
 	std::cout << "A valid LAMMPS input type has not been detected, please correct this..." << std::endl;
@@ -186,6 +206,44 @@ void particles::load(std::ifstream *ficIn)
 	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
 		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
+		(*ficIn) >> r_[i]; 
+
+		//Read a line
+		std::getline((*ficIn),buffer);
+	    }
+	}
+
+	if (inputType==4)
+	{
+	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
+	     for(int i=0 ; i<np_ ; i++)
+	    {
+		(*ficIn) >> ids_[i]; 
+		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
+	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
+		(*ficIn) >> r_[i]; 
+
+		//Read a line
+		std::getline((*ficIn),buffer);
+	    }
+	}
+
+	if (inputType==5)
+	{
+	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
+	     for(int i=0 ; i<np_ ; i++)
+	    {
+		(*ficIn) >> ids_[i]; 
+		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
+	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
+		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
+		for (int j=0 ; j<4 ; j++) (*ficIn) >> buffer;
 		(*ficIn) >> r_[i]; 
 
 		//Read a line

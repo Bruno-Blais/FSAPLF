@@ -1,4 +1,4 @@
-// Last Modified: Tue 24 Jun 2014 04:36:18 PM EDT
+// Last Modified: Sat 18 Oct 2014 05:06:23 PM CEST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -67,6 +67,12 @@ void plane::setParticles(double* r, double** x)
 void plane::setDimensions(double l)
 {
     dimensions_[0]=l;
+}
+
+void plane::setDimensions(double l, double w)
+{
+    dimensions_[0]=l;
+    dimensions_[1]=w;
 }
 
 void plane::setLength(double bottom, double top)

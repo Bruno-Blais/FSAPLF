@@ -111,9 +111,16 @@ options::options(int argc , char* argv[])
 	    {
 		plane_.setDimensions(atof(argv[i+4]));
 		plane_.setLength(atof(argv[i+5]),atof(argv[i+6]));
+                i+=7;
 	    }
 
-	    if (plane_.getType() <3)i+=7;
+            // Rectangle
+            if (plane_.getType() == 3)
+            {
+                plane_.setDimensions(atof(argv[i+4]),atof(argv[i+5]));
+                plane_.setLength(atof(argv[i+6]),atof(argv[i+7]));
+                i+=8;
+            }
 	}
 	else if ("-trajectory" == arg )
 	{

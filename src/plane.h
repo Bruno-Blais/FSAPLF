@@ -10,6 +10,13 @@
 *		    Plane averaging consists in calculating the voidfraction profile on surfaces
 *		    Plane can be cylindrical, squares, rectangles or circles
 *		    As of now, only full (circles, squares and rectangles) are implemented
+*   Plane types :
+*	1- Square
+*	2- Circle
+*	3- Rectangle
+*	4- Radial profiles
+*
+*
 *
 *******************************************************************************************/
 
@@ -43,6 +50,7 @@ public :
 
     void set(int, int, int);			    // set the plane mode
     void setDimensions(double);			    // Sets the dimensions of the plane
+    void setDimensions(double, double);		 
     void setLength(double, double);		    // Sets the interval over which the analysis takes place (bottom, top, etc)
     void setIter(int);				    // Set the iteration number
     void setNumber(int);			    // Set the number of particles on which the analysis is carried out

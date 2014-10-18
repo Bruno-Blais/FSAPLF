@@ -1,0 +1,7 @@
+Command examples :
+
+# Shear layer case
+# Launch averaging and plane analysis along z axis with 200
+# square planes of dimension 0.025
+./fsaplf -ext .dump -average -out ./out -path ./post -plane 1 2 200 0.025 0.001 0.025
+

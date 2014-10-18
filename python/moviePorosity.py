@@ -20,9 +20,9 @@ import matplotlib.animation as animation
 #********************************
 
 #Initial time of simulation, final time and time increment must be specified by user
-t0=1000
-tf=60000
-dT=1000
+t0=1000000
+tf=3000000
+dT=25000
 nt=int((tf-t0)/dT)
 t=t0
 
