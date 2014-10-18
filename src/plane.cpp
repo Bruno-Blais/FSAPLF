@@ -1,4 +1,4 @@
-// Last Modified: Sat 18 Oct 2014 05:06:23 PM CEST
+// Last Modified: Sat 18 Oct 2014 06:53:49 PM CEST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -97,7 +97,7 @@ void plane::analyse()
     double h;		    // Local position alongside the axis
     double dh;		    // Increment in the position
 
-    if (planeType_ < 3)
+    if (planeType_ < 4)
     {
 	//Case of the square
 	if ( planeType_ == 1)
@@ -121,11 +121,16 @@ void plane::analyse()
 	   h +=dh;
 	}
     }
+
+    else 
+    {
+       std::cerr << "Trying to use a plane mode that does not exist" << std::endl;
+    }
 }
 
 double plane::planeVoidFraction(int axis, double h)
 {
-    //Calculate the void fraction on a given plane
+    // Calculate the void fraction on a given plane
     // axis is the vector normal to the plane, it can either be : 0-x 1-y 2-z
     // h is the position on axis of the plane
     // function returns the Area of sphere on that plane

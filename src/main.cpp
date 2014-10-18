@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 04:55:37 PM EDT
+// Last Modified: Sat 18 Oct 2014 06:26:32 PM CEST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     terminalProgressInit(opt.getNumberOfFiles());
     
     // Parallelism will be done on this loop using openmp, it already works, it just needs to be enabled
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
 	    stp[i].load();
