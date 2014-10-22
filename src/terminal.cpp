@@ -1,4 +1,4 @@
-// Last Modified: Mon 20 Oct 2014 03:14:12 PM CEST
+// Last Modified: Wed 22 Oct 2014 10:30:35 AM CEST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -43,9 +43,10 @@ void terminalProgressInit(int n)
     cout << "0%   ";
     
     // buffer to prevent line overload
-    n=min(n,400);
+    n=n-40;
+    n=min(n,500);
 
-    for (int i=0 ; i<(n/4-10) ; i++)
+    for (int i=0 ; i<(n/4) ; i++)
     {
     cout << " " ;
     }
