@@ -28,14 +28,11 @@ t=t0
 
 folder=sys.argv[1]
 
-#Number of r  and z cells has to be specified
-nz=1
-nr = 10
-
 #Load first file to acquire the axis
 print "Acquiring time : ", t0
 fname=folder + str(t0)
 x,phi = numpy.loadtxt(fname, unpack=True) # Load data from text file
+print "Time acquired"
 
 fig = plt.figure("Void Fraction in time")
 ax = fig.add_subplot(111, autoscale_on=False, xlim=(min(x)-0.001,max(x)+0.001), ylim=(0.1, 1.05))
@@ -46,8 +43,6 @@ line, = ax.plot([], [], '-', lw=2)
 time_template = 'Iteration = %i'
 time_text = ax.text(0.05, 0.1, '', transform=ax.transAxes)
 
-#plt.ylabel('Fraction of solid')
-#plt.xlabel('Radius (r)')
 #plt.legend(loc=9)
 
 def init():

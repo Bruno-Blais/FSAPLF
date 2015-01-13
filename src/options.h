@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 02:21:51 PM EDT
+// Last Modified: Thu 23 Oct 2014 05:42:54 PM CEST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -76,6 +76,7 @@ public :
     bool getTrajectories();
     int getTrajectoriesType();
     int getNumberOfFiles();	    // Accessor for the number of files
+    int getBatchFreq();
     double getDt();
     std::string getLabel();
     std::string getPath();

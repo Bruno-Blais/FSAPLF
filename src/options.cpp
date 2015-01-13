@@ -66,7 +66,6 @@ options::options(int argc , char* argv[])
 	{
 	    batchFreq_ = atoi(argv[i+1]);
 	    std::cout << "Memory will be flushed every  : " << batchFreq_ << std::endl;
-	    std::cerr << "This functionnality is not implemented yet..." << std::endl;
 	    i+=2;
 	}
 	else if("-box" ==arg)
@@ -221,6 +220,8 @@ bool options::getTrajectories(){return trajectories_;}
 int options::getNumberOfFiles(){return nFiles_;}
 
 int options::getTrajectoriesType(){return trajectoriesType_;}
+
+int options::getBatchFreq(){return batchFreq_;}
 
 double options::getDt(){return dt_;}
 

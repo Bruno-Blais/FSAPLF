@@ -1,4 +1,4 @@
-// Last Modified: Sat 18 Oct 2014 05:47:21 PM CEST
+// Last Modified: Thu 23 Oct 2014 06:15:59 PM CEST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -46,7 +46,6 @@ particles::particles() : vAvg_(24), xAvg_(24), fAvg_(24), uAvg_(24)
 
 particles::~particles()
 {
-    std::cout<<" Destructing particles " << std::endl;
     for (int i = 0 ; i< np_ ; i++)
     {
 	delete x_[i];

@@ -1,4 +1,4 @@
-// Last Modified: Sat 18 Oct 2014 06:26:32 PM CEST
+// Last Modified: Wed 12 Nov 2014 05:58:14 PM EST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -14,7 +14,6 @@
 /*******************
 *  GENERAL INCLUDES
 ********************/
-
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -62,8 +61,8 @@ int main(int argc, char* argv[])
     // Begin progress bar
     terminalProgressInit(opt.getNumberOfFiles());
     
-    // Parallelism will be done on this loop using openmp, it already works, it just needs to be enabled
-    #pragma omp parallel for
+    // Parallelism will be done on this loop using openmp, it does not work right now 
+    //#pragma omp parallel for
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
 	    stp[i].load();
@@ -74,13 +73,13 @@ int main(int argc, char* argv[])
 		trj.allocate(opt.getTrajectoriesType(), opt.getNumberOfFiles(),stp[i].getNumberParticles(),stp[i].getIds());
 	    }
 	   
-	    if (opt.getAveraging())
-	    {
-		    stp[i].average();
-		    avg.setIter(i,stp[i].getIter());
-		    avg.setV(i,stp[i].getAverageV());
-		    avg.setX(i,stp[i].getAverageX());
-		    avg.setF(i,stp[i].getAverageF());
+            if (opt.getAveraging())
+            {
+                stp[i].average();
+                avg.setIter(i,stp[i].getIter());
+                avg.setV(i,stp[i].getAverageV());
+                avg.setX(i,stp[i].getAverageX());
+                avg.setF(i,stp[i].getAverageF());
 	    }
 
 	    if (opt.getPlaneOn())
@@ -97,6 +96,16 @@ int main(int argc, char* argv[])
 		trj.setStep(i, stp[i].getNumberParticles(),stp[i].getIds(),stp[i].getXArray());
 	    }
 	   // stp[i].print();
+
+           // Memory flushing
+            if (i%opt.getBatchFreq()==0 && i>opt.getBatchFreq())
+            {
+                //Flush the batchFreq_ previous iterations
+                for (int j =(i-2*opt.getBatchFreq()) ; j<(i-opt.getBatchFreq())  ; j++)
+                {
+                   stp[j].~steps(); 
+                }
+            }
 
 	    // Write progress bar
 	   terminalProgress(i);

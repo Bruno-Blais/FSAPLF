@@ -1,4 +1,4 @@
-// Last Modified: Wed 22 Oct 2014 10:30:35 AM CEST
+// Last Modified: Thu 23 Oct 2014 06:24:29 PM CEST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -38,19 +38,22 @@ void terminalInit()
 
 void terminalProgressInit(int n)
 {
+    string spaces(" ");
     cout << endl ;
     cout << "Progress Bar" << endl;
     cout << "0%   ";
-    
+   
     // buffer to prevent line overload
     n=n-40;
     n=min(n,500);
 
-    for (int i=0 ; i<(n/4) ; i++)
+    // This is bugged for some reason, no idea why
+    //for (int i=1 ; i<(n/4) ; i++)
     {
-    cout << " " ;
+        spaces += " " ;
     }
-    cout<<" 100%"<< endl;
+    cout << spaces ;
+    cout <<" 100%"<< endl;
 }
 
 void terminalProgress(int i)
@@ -61,8 +64,6 @@ void terminalProgress(int i)
 	cout.flush();
     }
 }
-
-
 
 void terminalClose()
 {

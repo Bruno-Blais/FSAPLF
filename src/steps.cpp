@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 04:47:41 PM EDT
+// Last Modified: Thu 23 Oct 2014 06:15:55 PM CEST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -44,8 +44,6 @@ steps::steps()
 
 steps::~steps()
 {
-    std::cout<<"Destructing steps " << std::endl;
-    particles_.~particles();
 }
 
 void steps::setPath(std::string fname)
