@@ -1,4 +1,4 @@
-// Last Modified: Thu 23 Oct 2014 06:15:59 PM CEST
+// Last Modified: Tue 13 Jan 2015 04:18:45 PM EST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -84,8 +84,13 @@ void particles::allocate(int n)
 
 void particles::load(std::ifstream *ficIn)
 {
-    int inputType=0;
-    bool isPresentU=false;
+    //Identifiers for the start tokens
+    unsigned int x =9999;
+    unsigned int v =9999;
+    unsigned int f =9999;
+    unsigned int id=9999;
+    unsigned int r =9999;
+    unsigned int u =9999;
 
     //Declaration
     std::string buffer;
@@ -95,200 +100,63 @@ void particles::load(std::ifstream *ficIn)
     std::getline((*ficIn),buffer);
 
     //Parse the header of the files
-    boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));	
+    boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));
 
-    // Depending on the header type, finally parse the data into the particles_ structure
-    // Some default LAMMPS input are already present, however this is not generic. The code does not
-    // interpret the data structure per se, it just detects which one among a set list of data structures
-    // Adding further data will eventually make it generic (I guess?)
-    if (
-	tokens[2]=="id"		&&
-	tokens[3]=="type"	&&
-	tokens[5]=="x"		&&
-	tokens[8]=="ix"		&&
-	tokens[11]=="vx"	&&
-	tokens[14]=="fx"	&&
-	tokens[17]=="omegax"	&&
-	tokens[20]=="radius"	
-	) inputType=1;
+    //Loop through all the tokens to identify the variables (x,v,f,ids,r)
+    for (unsigned int i=0 ; i < tokens.size() ; i++)
+    {
+        if(tokens[i]=="vx") v=i-2;
+        if(tokens[i]=="fx") f=i-2;
+        if(tokens[i]=="id") id=i-2;
+        if(tokens[i]=="x") x=i-2;
+        if(tokens[i]=="radius") r=i-2;
+    }   
     
-    if (
-	tokens[2]=="id"		&&
-	tokens[3]=="type"	&&
-	tokens[5]=="x"		&&
-	tokens[8]=="vx"		&&
-	tokens[11]=="fx"	&&
-	tokens[14]=="radius"	
-	) inputType=2;
-
-    if (
-	tokens[2]=="id"		&&
-	tokens[3]=="type"	&&
-	tokens[5]=="x"		&&
-	tokens[8]=="vx"		&&
-	tokens[11]=="fx"	&&
-	tokens[14]=="omegax"	&&
-	tokens[17]=="radius"
-	) inputType=3;
-    
-    if (
-	tokens[2]=="id"		&&
-	tokens[3]=="type"	&&
-	tokens[5]=="x"		&&
-	tokens[11]=="vx"	&&
-	tokens[14]=="fx"	&&
-	tokens[17]=="f_uf[1]"	&&
-	tokens[20]=="radius"
-	) inputType=4;
-
-     if (
-	tokens[2]=="id"		&&
-	tokens[3]=="type"	&&
-	tokens[5]=="x"		&&
-	tokens[11]=="vx"	&&
-	tokens[14]=="fx"	&&
-	tokens[18]=="f_uf[1]"	&&
-	tokens[21]=="radius"
-	) inputType=5;
-
-     if (
-        tokens[2]=="id"		&&
-        tokens[3]=="type"	&&
-	tokens[5]=="x"		&&
-	tokens[8]=="vx"		&&
-	tokens[11]=="fx"	&&
-	tokens[14]=="f_uf[1]"   &&
-        tokens[18]=="radius"    
-	) inputType=6;
+    // Sanity check to make sure x v f r ids have been found
+    if (x>99 || v>99 || f>99 || id>99 || r>99) std::cerr << "One of the core variable is missing (x,v,f,ids,r) x: "
+        << x << " v: " << v << " id: "<< id << " x: "<< x << " radius : " << r << std::endl;
 
 
-   
-    if (inputType==0) 
-	std::cout << "A valid LAMMPS input type has not been detected, please correct this..." << std::endl;
+    // Begin of the file reader
+    if(verbose) std::cout << "NEW GENERIC INPUT READER : " << std::endl; 
+    for(int i=0 ; i<np_ ; i++)
+    {
+        //Cast into the right variable
+        for (unsigned j=0 ; j<tokens.size()-2 ; j++)
+        {
+            if (j==id) (*ficIn) >> ids_[i];
+            else if (j==r) (*ficIn) >> r_[i];
+            else if (j==x)
+            {
+                for (int k=0 ; k<3 ; k++) (*ficIn) >> x_[i][k];
+                j+=2;
+            }
+            else if (j==f)
+            {
+                for (int k=0 ; k<3 ; k++) (*ficIn) >> f_[i][k];
+                j+=2;
+            }
+            else if (j==v)
+            {
+                for (int k=0 ; k<3 ; k++) (*ficIn) >> v_[i][k];
+                j+=2;
+            }
+            else
+            {
+                (*ficIn) >> buffer;
+            }
+        }
+        //Read a line
+        std::getline((*ficIn),buffer);
+    }
 
-    else
-    {	
-	if (inputType==1)
-	{
-	    if(verbose) std::cout << "Input format : " << inputType << std::endl ;
-	    for(int i=0 ; i<np_ ; i++)
-	    {
-		(*ficIn) >> ids_[i]; 
-		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
-	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
-		(*ficIn) >> r_[i]; 
-	
-		//Read a line
-		std::getline((*ficIn),buffer);
-	    }
-	}
-	
-	if (inputType==2)
-	{
-	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
-	     for(int i=0 ; i<np_ ; i++)
-	    {
-		//Cast into the right variable
-		(*ficIn) >> ids_[i]; 
-		(*ficIn) >> buffer;
-		(*ficIn) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
-		(*ficIn) >> r_[i]; 
-
-		//Read a line
-		std::getline((*ficIn),buffer);
-	    }
-	}
-
-	if (inputType==3)
-	{
-	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
-	     for(int i=0 ; i<np_ ; i++)
-	    {
-		(*ficIn) >> ids_[i]; 
-		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
-	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
-		(*ficIn) >> r_[i]; 
-
-		//Read a line
-		std::getline((*ficIn),buffer);
-	    }
-	}
-
-	if (inputType==4)
-	{
-	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
-	     for(int i=0 ; i<np_ ; i++)
-	    {
-		(*ficIn) >> ids_[i]; 
-		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
-	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
-		(*ficIn) >> r_[i]; 
-
-		//Read a line
-		std::getline((*ficIn),buffer);
-	    }
-	}
-
-	if (inputType==5)
-	{
-	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
-	     for(int i=0 ; i<np_ ; i++)
-	    {
-		(*ficIn) >> ids_[i]; 
-		for (int j=0 ; j<2 ; j++) (*ficIn) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> buffer;
-	    	for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
-		for (int j=0 ; j<4 ; j++) (*ficIn) >> buffer;
-		(*ficIn) >> r_[i]; 
-
-		//Read a line
-		std::getline((*ficIn),buffer);
-	    }
-	}
-        
-        if (inputType==6)
-	{
-	    if(verbose) std::cout << "Input format : " << inputType << std::endl; 
-	     for(int i=0 ; i<np_ ; i++)
-	    {
-		//Cast into the right variable
-		(*ficIn) >> ids_[i]; 
-		(*ficIn) >> buffer;
-		(*ficIn) >> buffer;
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> x_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> v_[i][j];
-		for (int j=0 ; j<3 ; j++) (*ficIn) >> f_[i][j];
-		(*ficIn) >> r_[i]; 
-
-		//Read a line
-		std::getline((*ficIn),buffer);
-	    }
-	}
-
-	// Variables that are not present in the input file are zeroed
-	if (isPresentU == false)
-	{
-	    for (int i=0 ; i<np_ ; i++)
-	    {
-		for (int j=0 ; j<3 ; j++) u_[i][j]=0.;
-	    }
-	}
+    // Variables that are not present in the input file are zeroed
+    if (u>100)
+    {
+        for (int i=0 ; i<np_ ; i++)
+        {
+            for (int j=0 ; j<3 ; j++) u_[i][j]=0.;
+        }
     }
 }
 
