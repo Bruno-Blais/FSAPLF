@@ -62,9 +62,6 @@ public :
 						    // along an axis
     void write(std::string, std::string, int);	    // Write the results to a file
 
-    // Related to planes
-    //double sectionVoidFraction(int axis, double h);
-
     //Accessors functions
     int getType();
     int getAxis();

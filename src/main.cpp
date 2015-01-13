@@ -1,4 +1,3 @@
-// Last Modified: Wed 12 Nov 2014 05:58:14 PM EST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -59,7 +58,7 @@ int main(int argc, char* argv[])
     opt.setSteps(stp);
 
     // Begin progress bar
-    terminalProgressInit(opt.getNumberOfFiles());
+    terminalLoadBarInit();
     
     // Parallelism will be done on this loop using openmp, it does not work right now 
     //#pragma omp parallel for
@@ -95,7 +94,6 @@ int main(int argc, char* argv[])
 	    {
 		trj.setStep(i, stp[i].getNumberParticles(),stp[i].getIds(),stp[i].getXArray());
 	    }
-	   // stp[i].print();
 
            // Memory flushing
             if (i%opt.getBatchFreq()==0 && i>opt.getBatchFreq())
@@ -108,7 +106,7 @@ int main(int argc, char* argv[])
             }
 
 	    // Write progress bar
-	   terminalProgress(i);
+	   terminalLoadBar(i,opt.getNumberOfFiles(),50);
     }
 
     // Output of global results

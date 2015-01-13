@@ -32,6 +32,8 @@
 #include "steps.h"
 
 #define verbose 0
+#define WIDTH   30
+#define WIDTH2  31
 
 namespace fs = boost::filesystem;
 using namespace std;
@@ -47,9 +49,9 @@ options::options(int argc , char* argv[])
     planeOn_=false;
     batch_=false;	    
     batchFreq_=999999;  
-    path_="./";		    // Default path is directory of the executable
+    path_="./";		    // Default path is directory of the execution
     outputPath_="./";	    // Default output is local directory
-    caseLabel_="dummy";	
+    caseLabel_=".sa";	
     extension_=".dump";	    // Default extension name
 
     //Parse the options from the terminal to know which mode to enable
@@ -58,14 +60,14 @@ options::options(int argc , char* argv[])
 	arg = argv[i];
 	if ("-average" == arg)
 	{
-	    std::cout << "Averaging enabled" << std::endl;
+	    std::cout << std::setw(WIDTH) << "Averaging" << ": Enabled" << std::endl;
 	    averaging_=true;
 	    i++;
 	}
 	else if ("-batch" == arg)
 	{
 	    batchFreq_ = atoi(argv[i+1]);
-	    std::cout << "Memory will be flushed every  : " << batchFreq_ << std::endl;
+	    std::cout << std::setw(WIDTH) << "Memory flush frequency" << ": " <<  batchFreq_ << std::endl;
 	    i+=2;
 	}
 	else if("-box" ==arg)
@@ -77,32 +79,32 @@ options::options(int argc , char* argv[])
 	else if ("-ext" == arg)
 	{
 	    extension_ = argv[i+1];
-	    std::cout << "Extensions considered : " << extension_ << std::endl; 
+	    std::cout << std::setw(WIDTH) <<  "File extension" << ": " <<  extension_ << std::endl; 
 	    i+=2;
 	}
 	else if ("-label" == arg)
 	{
 	    caseLabel_ = argv[i+1];
-	    std::cout << "Output files label : " << caseLabel_ << std::endl;
+	    std::cout << std::setw(WIDTH) <<  "Output files label" << ": " << caseLabel_ << std::endl;
 	    i+=2;
 	}
 	else if ("-out" ==arg)
 	{
 	    outputPath_ = argv[i+1];
-	    std::cout << "Output path is : " << outputPath_ << std::endl;
+	    std::cout << std::setw(WIDTH) <<  "Output path" << ": " <<  outputPath_ << std::endl;
 	    i +=2;
 	}
 	else if ("-path" == arg)
 	{
 	    path_ = argv[i+1];
-	    std::cout << "Dumps path : " << path_ << std::endl; 
+	    std::cout << std::setw(WIDTH) << "Dumps path" << ": " <<  path_ << std::endl; 
 	    i+=2;
 	}
 	else if ("-plane" ==arg)
 	{
-	    std::cout << "Porosity analysis enabled" << std::endl;
-	    std::cout << "Arguments : Type, axis, number of planes, dimension, beggining, end"<<std::endl;
-	    std::cout << "Modes: 1- square analysis\t2- circle \t3- rectangle" << std::endl;
+	    std::cout << std::setw(WIDTH)  <<  "Porosity analysis" << ": Enabled" << std::endl;
+	    std::cout << std::setw(WIDTH2) << " " << "Arguments : Type, axis, number of planes, dimension, beggining, end"<<std::endl;
+	    std::cout << std::setw(WIDTH2) << " " << "Type: 1- square analysis\t2- circle \t3- rectangle" << std::endl;
 	    planeOn_=true;
 	   
 	    plane_.set(atoi(argv[i+1]),atoi(argv[i+2]),atoi(argv[i+3]));
@@ -141,6 +143,10 @@ options::options(int argc , char* argv[])
 	    std::cout << "Timestep fixed at : " << dt_ << std::endl;
 	    i+=2;
 	}
+        else if("\\"==arg)
+        {
+            i++;
+        }
 	else
 	{
 	    std::cout << "Option " << arg << " is not available" << std::endl;
@@ -156,7 +162,6 @@ options::~options()
 
 void options::getFilesIdentification()
 {
-   
     // Find the number of pertinent file in the directory in order to take care of memory allocation
     // This was noticeably simpler in python. Here we use the Boost library in order to simplify
     // interactions with the OS
@@ -164,7 +169,7 @@ void options::getFilesIdentification()
     fs::path p (path_);
     nFiles_=0;
     
-    if (fs::exists(p))    // does p actually exist?
+    if (fs::exists(p))    
     {
 	// Test the validity of the path
 	if (fs::is_directory(p))      
@@ -204,7 +209,7 @@ void options::getFilesIdentification()
 	std::cout << p << " is not a directory" << std::endl;
     }
     else
-	std::cout << p << " does not even exit ??? what is wrong with you anyway?" << std::endl;
+	std::cout << p << " does not even exit ??? what is wrong with you?" << std::endl;
 
 }
 

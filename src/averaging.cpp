@@ -1,4 +1,3 @@
-// Last Modified: Thu 26 Jun 2014 03:54:34 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows

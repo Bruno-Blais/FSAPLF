@@ -1,4 +1,4 @@
-// Last Modified: Thu 23 Oct 2014 06:24:29 PM CEST
+// Last Modified: Tue 13 Jan 2015 03:06:41 PM EST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -35,34 +35,10 @@ void terminalInit()
     cout << endl;
 }
 
-
-void terminalProgressInit(int n)
+void terminalLoadBarInit()
 {
-    string spaces(" ");
-    cout << endl ;
-    cout << "Progress Bar" << endl;
-    cout << "0%   ";
-   
-    // buffer to prevent line overload
-    n=n-40;
-    n=min(n,500);
-
-    // This is bugged for some reason, no idea why
-    //for (int i=1 ; i<(n/4) ; i++)
-    {
-        spaces += " " ;
-    }
-    cout << spaces ;
-    cout <<" 100%"<< endl;
-}
-
-void terminalProgress(int i)
-{
-    if (i%4==0)
-    {
-	cout << "|" ;
-	cout.flush();
-    }
+    cout << endl;
+    cout <<"Progress Bar:"<< endl;
 }
 
 void terminalClose()
@@ -72,4 +48,18 @@ void terminalClose()
     cout << "* FSAPLF has exited normally                                     *" << endl;
     cout << "******************************************************************" << endl;
     cout << endl;
+}
+
+
+void terminalLoadBar(unsigned int x, unsigned int n, unsigned int w)
+{
+    if ( (x != n) && (x % (n/100+1) != 0) ) return;
+ 
+    float    ratio=  x/(float)n;
+    unsigned int    c=  ratio * w;
+ 
+    cout << setw(3) << (int)(ratio*100) << "% [";
+    for (unsigned int x=0; x<c; x++) cout << "=";
+    for (unsigned int x=c; x<w; x++) cout << " ";
+    cout << "]\r" << flush;
 }
