@@ -1,4 +1,4 @@
-// Last Modified: Tue 13 Jan 2015 04:18:45 PM EST
+// Last Modified: Tue 13 Jan 2015 04:22:59 PM EST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -113,8 +113,8 @@ void particles::load(std::ifstream *ficIn)
     }   
     
     // Sanity check to make sure x v f r ids have been found
-    if (x>99 || v>99 || f>99 || id>99 || r>99) std::cerr << "One of the core variable is missing (x,v,f,ids,r) x: "
-        << x << " v: " << v << " id: "<< id << " x: "<< x << " radius : " << r << std::endl;
+    if (x>99 || v>99 || id>99 || r>99) std::cerr << "One of the core variable is missing (x,v,ids,r) x: "
+        << x << " v: " << v << " id: "<< id << " radius : " << r << std::endl;
 
 
     // Begin of the file reader
@@ -156,6 +156,13 @@ void particles::load(std::ifstream *ficIn)
         for (int i=0 ; i<np_ ; i++)
         {
             for (int j=0 ; j<3 ; j++) u_[i][j]=0.;
+        }
+    }
+    if (f>100)
+    {
+        for (int i=0 ; i<np_ ; i++)
+        {
+            for (int j=0 ; j<3 ; j++) f_[i][j]=0.;
         }
     }
 }

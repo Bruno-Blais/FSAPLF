@@ -29,6 +29,7 @@
 #include "averaging.h"
 #include "terminal.h"
 #include "trajectories.h"
+#include "Pca.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ int main(int argc, char* argv[])
     steps* stp;
     averaging avg;
     trajectories trj;
+    Pca pca;
 
     // Initilization of the code
     terminalInit();

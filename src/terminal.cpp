@@ -1,4 +1,4 @@
-// Last Modified: Tue 13 Jan 2015 03:06:41 PM EST
+// Last Modified: Wed 14 Jan 2015 11:42:50 AM EST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -26,12 +26,19 @@ using namespace std;
 void terminalInit()
 {
     cout << endl << endl;
-    cout << "******************************************************************" << endl;
-    cout << "* FSAPLF                                                         *" << endl;
-    cout << "* Framework for the Statistical Analysis of Particle-Laden Flows *" << endl;
-    cout << "* Version 0.2						         *" << endl;
-    cout << "* Created by Bruno Blais				         *" << endl;
-    cout << "******************************************************************" << endl;
+    cout << "****************************************************************************" << endl;
+    //cout << "    ______ _____  ___  ______ _      _____"<<endl 
+    //     << "    |  ___/  ___|/ _ \\ | ___ \\ |    |  ___|"<<endl
+    //     << "    | |_  \ `--./  /_\\ \\| |_/ / |    | |_    "<<endl
+    //     << "    |  _|  `--. \\  _  ||  __/| |    |  _|  "<<endl
+    //     << "    | |   /\\__/ / | | || |   | |____| |    "<<endl
+    //     << "    \\_|   \\____/\\_| |_/\\_|   \\_____/\\_|   "<<endl;
+    //cout << "*                                                                          *" << endl;
+    cout << "* FSAPLF                                                                   *" << endl;
+    cout << "* Framework for the Statistical Analysis of Particle-Laden Flows           *" << endl;
+    cout << "* Version 0.3						                   *" << endl;
+    cout << "* Created by Bruno Blais				                   *" << endl;
+    cout << "****************************************************************************" << endl;
     cout << endl;
 }
 
@@ -44,9 +51,9 @@ void terminalLoadBarInit()
 void terminalClose()
 {
     cout << endl << endl;
-    cout << "******************************************************************" << endl;
-    cout << "* FSAPLF has exited normally                                     *" << endl;
-    cout << "******************************************************************" << endl;
+    cout << "****************************************************************************" << endl;
+    cout << "* FSAPLF has exited normally                                               *" << endl;
+    cout << "****************************************************************************" << endl;
     cout << endl;
 }
 
