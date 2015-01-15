@@ -52,7 +52,7 @@ options::options(int argc , char* argv[])
     batchFreq_=999999;  
     path_="./";		    // Default path is directory of the execution
     outputPath_="./";	    // Default output is local directory
-    caseLabel_=".sa";	
+    caseLabel_="out";	
     extension_=".dump";	    // Default extension name
 
     //Parse the options from the terminal to know which mode to enable

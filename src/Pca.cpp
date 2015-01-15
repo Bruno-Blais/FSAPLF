@@ -32,6 +32,7 @@
 #include "writing.h"
 
 #define PI 3.14159265359
+#define WIDTHOUT 16
 #define WIDTH   30
 #define WIDTH2  31
 #define PRES 7
@@ -93,6 +94,7 @@ void Pca::manage(int iter, int np, int* id, double** x)
     // If zeroth iteration has already been set, normal analysis
     if (enabled_ && iter>it0_)
     {
+            iter_[nIter_]=iter;
             analyse(x);
     }
     else
@@ -176,118 +178,106 @@ void Pca::analyse(double** x)
     {
         for (int j=0 ; j < 3; j++)
         {
-            c[i][j] = calcCij(np_,x0t_[i],x_[j]);
+            c[i][j] = calcCij(np_,x0t_[j],x_[i]);
         }
     }
 
+
+/*
+    std::cout<< "x0 Mean: " << calcMean(np_,x0t_[0])<<std::endl; 
+    std::cout<< "x0 Mean: " << calcMean(np_,x0_[0])<<std::endl;
+    std::cout<< "x0 Mean: " << calcMean(np_,x_[0])<<std::endl;
+    std::cout<< "y0 Mean: " << calcMean(np_,x0t_[1])<<std::endl; 
+    std::cout<< "y0 Mean: " << calcMean(np_,x0_[1])<<std::endl;
+    std::cout<< "y0 Mean: " << calcMean(np_,x_[1])<<std::endl;
+    std::cout<< "z0 Mean: " << calcMean(np_,x0t_[2])<<std::endl; 
+    std::cout<< "z0 Mean: " << calcMean(np_,x0_[2])<<std::endl;
+    std::cout<< "z0 Mean: " << calcMean(np_,x_[2])<<std::endl;
+
+
+    std::cout<< "x0 StdDev: " << calcStdDev(np_,x0t_[0])<<std::endl; 
+    std::cout<< "x0 StdDev: " << calcStdDev(np_,x0_[0])<<std::endl;
+    std::cout<< "x0 StdDev: " << calcStdDev(np_,x_[0])<<std::endl;
+    std::cout<< "y0 StdDev: " << calcStdDev(np_,x0t_[1])<<std::endl; 
+    std::cout<< "y0 StdDev: " << calcStdDev(np_,x0_[1])<<std::endl;
+    std::cout<< "y0 StdDev: " << calcStdDev(np_,x_[1])<<std::endl;
+    std::cout<< "z0 StdDev: " << calcStdDev(np_,x0t_[2])<<std::endl; 
+    std::cout<< "z0 StdDev: " << calcStdDev(np_,x0_[2])<<std::endl;
+    std::cout<< "z0 StdDev: " << calcStdDev(np_,x_[2])<<std::endl;
+*/
+/*
+    for (int i =0 ; i < np_ ; i++)
+    {
+        std::cout << "id :" << id_[i] << " " << x0_[0][i] << std::endl;
+    }
+
+    for (int i =0 ; i < np_ ; i++)
+    {
+        std::cout << "LAM :" << id_[i] << " " << x[i][0] << std::endl;
+    }
+*/
+
     cT=calcMatTranspose(c);
     m=calcMatMult(c,cT); 
+
+/*
+    calcPrintMat(c,"C");
+    calcPrintMat(cT,"CT");
+    calcPrintMat(m,"M");
+  */
 
 
     //Instantiate Jacobi method to solve eigenvalues problem
     Jacobi jac(m);
 
+    // extract eigen values and eigenvectors
     VecDoub eig=jac.d;
     MatDoub eigv=jac.v;
 
-
+    for (int i =0 ; i <eig.size() ; i++)
+    {
+        eig_[nIter_][i] = eig[i];
+    }
+    for (int i =0 ; i <eigv.ncols() ; i++)
+    {
+        for (int j =0 ; j <eigv.nrows() ; j++) 
+        {
+            eigv_[nIter_][eigv.nrows()*i+j] = eigv[j][i];
+        }
+    }
 
     //Increment number of stored iterations
     nIter_++;
 }
 
-void Pca::write(std::string path, std::string label, int nit)
+void Pca::write(std::string path, std::string label)
 {
-    std::string filename = path+"/"+label+"_plane_"+writingIntToString(nit);
+    std::string filename = path+"/"+label+"_pca";
     std::ofstream ficOut(filename.c_str());
-    /*
-    for (int i=0 ; i<planeNumber_ ; i++)
+    
+    ficOut	<< std::setw(WIDTHOUT) << "iter " 
+		<< std::setw(WIDTHOUT) << "L1 " 	    
+		<< std::setw(WIDTHOUT) << "L2 " 	
+		<< std::setw(WIDTHOUT) << "L3 " 	    
+		<< std::setw(WIDTHOUT) << "V1-1 " 	
+		<< std::setw(WIDTHOUT) << "V1-2 " 	    
+		<< std::setw(WIDTHOUT) << "V1-3 " 	
+		<< std::setw(WIDTHOUT) << "V2-1 " 	
+		<< std::setw(WIDTHOUT) << "V2-2 " 	    
+		<< std::setw(WIDTHOUT) << "V2-3 " 	
+		<< std::setw(WIDTHOUT) << "V3-1 " 	
+		<< std::setw(WIDTHOUT) << "V3-2 " 	    
+		<< std::setw(WIDTHOUT) << "V3-3 " 	
+                << std::endl;
+
+    for (int i=0 ; i<nIter_ ; i++)
     {
-	ficOut	<< std::setw(WIDTH) << std::setprecision(PRES) << pos_[i] << " "  
-		<< std::setw(WIDTH) << std::setprecision(PRES) << voidfraction_[i] << " "
-		<< std::endl;
+	ficOut << std::setw(WIDTHOUT);
+	ficOut << std::setprecision(PRES);
+	ficOut	<< iter_[i] << " " ;  
+	for (int j=0 ; j<3 ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << eig_[i][j]  ;
+        for (int j=0 ; j<9 ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << eigv_[i][j]  ;
+	ficOut << std::endl;
     }
-    */
     ficOut.close();
 }
-
-
-
-
-/*
-   void plane::set(int planeType, int planeAxis, int planeNumber)
-   {
-   x_=NULL;
-   r_=NULL;
-   planeType_ = planeType;
-   planeAxis_ = planeAxis;
-   planeNumber_ = planeNumber;
-   voidfraction_ = new double[planeNumber_];
-   pos_ = new double[planeNumber_];
-   }
-
-   void plane::setParticles(double* r, double** x)
-   {
-   r_=r;
-   x_=x;
-   }
-
-   void plane::setDimensions(double l)
-   {
-   dimensions_[0]=l;
-   }
-
-   void plane::setDimensions(double l, double w)
-   {
-    dimensions_[0]=l;
-    dimensions_[1]=w;
-}
-
-void plane::setLength(double bottom, double top)
-{
-    length_[0]=bottom;
-    length_[1]=top;
-}
-
-void plane::setNumber(int np)
-{
-    np_=np;
-}
-
-void plane::print()
-{
-}
-
-double plane::planeVoidFraction(int axis, double h)
-{
-    // Calculate the void fraction on a given plane
-    // axis is the vector normal to the plane, it can either be : 0-x 1-y 2-z
-    // h is the position on axis of the plane
-    // function returns the Area of sphere on that plane
-    double x=0;
-    double r=0;
-    double r2s=0;
-    double area=0;
-
-    for (int i=0 ; i< np_ ; i++)
-    {
-	x = x_[i][axis];
-	r = r_[i];
-	if (((( x+r > h ) && ( x-r > h)) || ((x+r<h) && (x-r<h))) == false)
-	{
-	    //Particle crosses the plane
-	    r2s = r*r-(x-h)*(x-h);
-	    area += PI *r2s;
-	}
-    }
-
-    return area;
-}
-
-
-
-//Accesssors
-int plane::getType(){return planeType_;}
-int plane::getAxis(){return planeAxis_;}
-int plane::getNumber(){return planeNumber_;}
-*/

@@ -47,12 +47,11 @@ int main(int argc, char* argv[])
     //Options constructor parses the input from the terminal ---> this is to be deprecated
     options opt(argc, argv);
 
-    // Constructors that use the new API
-    Pca pca(argc, argv,opt.getNumberOfFiles());
-
-
     // Calculate number of files in the folder
     opt.getFilesIdentification();
+
+    // Constructors that use the new API
+    Pca pca(argc, argv,opt.getNumberOfFiles());
 
     // Allocate the steps
     stp = new steps[opt.getNumberOfFiles()];
@@ -104,7 +103,6 @@ int main(int argc, char* argv[])
             if (opt.getPca())
             {
                 pca.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
-                pca.write(opt.getOutputPath(), opt.getLabel(),stp[i].getIter());
             }
 
            // Memory flushing
@@ -124,6 +122,7 @@ int main(int argc, char* argv[])
     // Output of global results
 
     if (opt.getAveraging()) avg.writeFile(opt.getOutputPath(), opt.getLabel());
+    if (opt.getPca()) pca.write(opt.getOutputPath(), opt.getLabel());
 
     terminalClose();
     return 0; 

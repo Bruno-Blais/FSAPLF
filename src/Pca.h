@@ -54,7 +54,7 @@ public :
     void manage(int,int,int*,double**);                 // API for the whole pca analysis
     void initialise();                                  // Initialise the data to know which iteration is zeroth
     void setZeroth(double **);                          // Set zeroth values
-    void write(std::string, std::string, int);	        // Write the results to a file
+    void write(std::string, std::string);	        // Write the results to a file
     void enable();                                      // Start PCA analysis
     void setParticlePositions(double**,double**);       // Transform particle position to 3xnp array format
     void allocate(int);                                 // Allocate memory to store the eigenvalues and vectors

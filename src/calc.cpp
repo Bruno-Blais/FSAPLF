@@ -36,15 +36,14 @@ void calcCyl(double* p1, double* p2)
     p1[2] = p2[2];
 }
 
-
-inline double calcMean(int n, double* x)
+double calcMean(int n, double* x)
 {
     double sum=0;
     for (int i=0 ; i <n ; i++) sum += x[i];
     return sum/n;
 }
 
-inline double calcStdDev(int n, double* x)
+double calcStdDev(int n, double* x)
 {
     double s=0;
     double xMean=calcMean(n,x);
@@ -65,6 +64,7 @@ double calcCij(int n,double* x,double* y)
     double yStd=calcStdDev(n,y);
     double xMean=calcMean(n,x);
     double yMean=calcMean(n,y);
+
     
     for(int i=0 ; i < n ; i++)
     {
@@ -109,4 +109,18 @@ MatDoub calcMatTranspose(MatDoub A)
     }
 
     return M;
+}
+
+
+void calcPrintMat(MatDoub A,string name)
+{
+    std::cout << "Matrix :" << name << std::endl;
+    for (int i=0 ; i<A.nrows() ; i++)
+    {
+        for (int j=0 ; j<A.ncols() ; j++)
+        {
+            std::cout << std::setw(WIDTH) << A[i][j] << " " ;
+        }
+        std::cout<<std::endl;
+    }
 }
