@@ -7,7 +7,7 @@
 *   File    : pca.h
 *
 *   Description :   Container class for principal component analysis
-*                   PCA options are available:
+*                   PCA types are available:
 *                       - Cartesian (x,y,z)
 *                       - Cylindrical (r,theta,z)
 *
@@ -21,6 +21,7 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include "nr3.h"
 
 #ifndef PCA_H
 #define PCA_H 
@@ -38,20 +39,25 @@ private :
     double** x0t_;                      // Zeroth position with id order of current positions
     double** x_;                        // Current position storede in reversed format
     int* link_;                         // List linking an ID to the x0 table
-    int* ids_;                          // List of the particle ids
+    int* id_;                           // List of the particle ids
+    MatDoub eigv_;                      // EigvenVectors
+    MatDoub eig_;                       // Eigenvalues
+    VecDoub iter_;                      // Label of iterations
+    int  nIter_;                        // Number of iterations
 
 public :
-    Pca();
+    Pca(int, char**,int);
     ~Pca();
 
     void print();				        // Print content of the class
-    void analyse(int, double**);		        // Carry the analysis
+    void analyse(double**);		                // Carry the analysis
     void manage(int,int,int*,double**);                 // API for the whole pca analysis
     void initialise();                                  // Initialise the data to know which iteration is zeroth
-    void setZeroth(int,int*, double **);                // Set zeroth values
+    void setZeroth(double **);                          // Set zeroth values
     void write(std::string, std::string, int);	        // Write the results to a file
     void enable();                                      // Start PCA analysis
-    void setParticlePositions(int,double**,double**);    // Transform particle position to 3xnp array format
+    void setParticlePositions(double**,double**);       // Transform particle position to 3xnp array format
+    void allocate(int);                                 // Allocate memory to store the eigenvalues and vectors
 
     //Accessors functions
     int getType();

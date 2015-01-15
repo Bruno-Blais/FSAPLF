@@ -15,12 +15,16 @@
 #include <cmath>
 #include <string>
 
+#include "nr3.h" 
+
 #ifndef CALC_H
 #define CALC_H 
 
-void calcCyl(double*,double*);                          // Transforms from cartesian to cylindrical coordinates
-inline double calcReDev(int n,double* x,double *y);            // Calculate reduced deviation array
-inline double calcMean(int n,double* x);                       // Calculate mean
+void calcCyl(double*,double*);                                  // Transforms from cartesian to cylindrical coordinates
+inline double calcReDev(int n,double* x,double *y);             // Calculate reduced deviation array
+inline double calcMean(int n,double* x);                        // Calculate mean
 inline double calcStdDev(int n,double* x);
 double calcCij(int n,double* x,double* y);
+MatDoub calcMatMult(MatDoub A, MatDoub B);                       // Matrix multiplication
+MatDoub calcMatTranspose(MatDoub A);                             // Matrix transpose
 #endif

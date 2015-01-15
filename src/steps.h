@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 04:47:29 PM EDT
+// Last Modified: Wed 14 Jan 2015 05:02:52 PM EST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -24,8 +24,8 @@ class steps
 private :
     particles particles_;		// Information about the particles
     std::string fname_;			// File name
-    int nit_;				// Iteration number
-    int nstp_;				// Step number
+    int nit_;				// 
+    int nstp_;				//
     int np_;				// Number of particles inside the particles_
     double t_;				// Time
 
@@ -54,8 +54,10 @@ public :
 
     // Accessors
     int getIter();
+    int getStep();
     int getNumberParticles();
 
+    int*     getId();
     double** getXArray();
 
     std::vector<int>	getIds();

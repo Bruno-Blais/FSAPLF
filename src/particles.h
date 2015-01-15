@@ -1,4 +1,4 @@
-// Last Modified: Wed 02 Jul 2014 02:26:42 PM EDT
+// Last Modified: Wed 14 Jan 2015 03:39:31 PM EST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -52,6 +52,7 @@ public :
     
     // Accessors
     int getNumber();
+    int* getId();
     double* getV(int);			// Access velocity
     double* getX(int);			// Access position
     double* getRArray();

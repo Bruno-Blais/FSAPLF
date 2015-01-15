@@ -1,4 +1,3 @@
-// Last Modified: Tue 13 Jan 2015 04:22:59 PM EST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -21,6 +20,7 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -94,6 +94,7 @@ void particles::load(std::ifstream *ficIn)
 
     //Declaration
     std::string buffer;
+    std::string line;
     std::vector<std::string> tokens;
 
     //Get the lines
@@ -122,34 +123,42 @@ void particles::load(std::ifstream *ficIn)
     for(int i=0 ; i<np_ ; i++)
     {
         //Cast into the right variable
-        for (unsigned j=0 ; j<tokens.size()-2 ; j++)
-        {
-            if (j==id) (*ficIn) >> ids_[i];
-            else if (j==r) (*ficIn) >> r_[i];
-            else if (j==x)
-            {
-                for (int k=0 ; k<3 ; k++) (*ficIn) >> x_[i][k];
-                j+=2;
-            }
-            else if (j==f)
-            {
-                for (int k=0 ; k<3 ; k++) (*ficIn) >> f_[i][k];
-                j+=2;
-            }
-            else if (j==v)
-            {
-                for (int k=0 ; k<3 ; k++) (*ficIn) >> v_[i][k];
-                j+=2;
-            }
-            else
-            {
-                (*ficIn) >> buffer;
-            }
-        }
-        //Read a line
-        std::getline((*ficIn),buffer);
-    }
+        
+            std::getline((*ficIn),buffer);
+        /*
+            boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));
+                ids_[i] = atoi(tokens[id].c_str());
+                r_[i]  = atof(tokens[r].c_str());
+                for (int k=0 ; k<3 ; k++) x_[i][k] = atof(tokens[x+k].c_str());
+                for (int k=0 ; k<3 ; k++) v_[i][k] = atof(tokens[v+k].c_str());
+                for (int k=0 ; k<3 ; k++) f_[i][k] = atof(tokens[f+k].c_str());
+                */
 
+
+            std::istringstream row(buffer);
+            double field;
+            unsigned int j=0;
+            while (row>> field)
+            {
+                if(verbose) std::cout<< field <<'\t';
+                if (j==id) ids_[i] = int(field);
+                if (ids_[i] >2*np_ && j==id) std::cout<<"j = " << j <<" Erreur" << ids_[i] << std::endl;
+                else if (j==r) r_[i] = field;
+                else if (j<(x+3) && j>=x)
+                {
+                    x_[i][j-x] = field;
+                }
+                else if (j<(f+3) && j>=f)
+                {
+                    f_[i][j-f] = field;
+                }
+                else if (j<(v+3) && j>=v)
+                {
+                    v_[i][j-v] = field;
+                }
+                j++;
+            }
+    }
     // Variables that are not present in the input file are zeroed
     if (u>100)
     {
@@ -364,6 +373,8 @@ std::vector<int> particles::getIds()
 
     return ids;
 }
+
+int* particles::getId() {return ids_;}
 
 std::vector<double> particles::getAverageV(){return vAvg_;}
 

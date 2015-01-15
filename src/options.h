@@ -1,4 +1,3 @@
-// Last Modified: Thu 23 Oct 2014 05:42:54 PM CEST
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -24,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 #include "steps.h"
 #include "plane.h"
 #include "boxes.h"
@@ -41,7 +41,8 @@ private :
     bool planeOn_;		    // Enables planes of porosity
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
     bool box_;			    // Enables region boxing for averaging analysis
-
+    bool pca_;                      // Enables principal component analysis
+    
     double dt_;			    // Timestep
 
     std::string caseLabel_;	    // Label to give to the post-processing of the information
@@ -52,6 +53,8 @@ private :
     vecPath filesPath_;		    // Individual paths to each files
     int nFiles_;		    // Number of files
     int batchFreq_;		    // Frequency of memory flushing for batch process
+    std::string pcaType_;           // Type of PCA analysis
+    int    pcaIt0_;                 // Initial iteration of PCA
     
     // Information about boxes for averaging
     int nBox_;
@@ -74,6 +77,7 @@ public :
     bool getAveraging();
     bool getPlaneOn();
     bool getTrajectories();
+    bool getPca();
     int getTrajectoriesType();
     int getNumberOfFiles();	    // Accessor for the number of files
     int getBatchFreq();
@@ -83,5 +87,9 @@ public :
     std::string getOutputPath();
 
     plane getPlane();
+
+
+
+
 };
 #endif

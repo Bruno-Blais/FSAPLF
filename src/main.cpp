@@ -35,17 +35,21 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    // Declarations
+     // Initilization of the code
+    terminalInit();
+
+    // Declarations and constructors
     steps* stp;
     averaging avg;
     trajectories trj;
-    Pca pca;
 
-    // Initilization of the code
-    terminalInit();
 
-    //Options constructor parses the input from the terminal
+    //Options constructor parses the input from the terminal ---> this is to be deprecated
     options opt(argc, argv);
+
+    // Constructors that use the new API
+    Pca pca(argc, argv,opt.getNumberOfFiles());
+
 
     // Calculate number of files in the folder
     opt.getFilesIdentification();
@@ -67,7 +71,7 @@ int main(int argc, char* argv[])
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
 	    stp[i].load();
-	    //std::cout << "File iteration :\t"<<stp[i].getIter()<<std::endl;
+	   // std::cout << "File iteration :\t"<<stp[i].getIter()<<std::endl;
 	   
 	    if (opt.getTrajectories() && i==0)
 	    {
@@ -96,6 +100,12 @@ int main(int argc, char* argv[])
 	    {
 		trj.setStep(i, stp[i].getNumberParticles(),stp[i].getIds(),stp[i].getXArray());
 	    }
+
+            if (opt.getPca())
+            {
+                pca.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
+                pca.write(opt.getOutputPath(), opt.getLabel(),stp[i].getIter());
+            }
 
            // Memory flushing
             if (i%opt.getBatchFreq()==0 && i>opt.getBatchFreq())

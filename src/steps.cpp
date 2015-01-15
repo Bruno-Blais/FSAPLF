@@ -1,4 +1,4 @@
-// Last Modified: Thu 23 Oct 2014 06:15:55 PM CEST
+// Last Modified: Wed 14 Jan 2015 05:49:08 PM EST
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -142,9 +142,19 @@ int steps::getIter()
     return nit_;
 }
 
+int steps::getStep()
+{
+    return nstp_;
+}
+
 int steps::getNumberParticles()
 {
     return np_;
+}
+
+int* steps::getId()
+{
+    return particles_.getId();
 }
 
 double** steps::getXArray()

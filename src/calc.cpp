@@ -21,6 +21,8 @@
 /********************
 * HEADER INCLUDES
 ********************/
+#include "nr3.h"
+
 
 #define PI 3.14159265359
 #define WIDTH 12
@@ -71,4 +73,40 @@ double calcCij(int n,double* x,double* y)
 
 
     return calcMean(n,reDev);
+}
+
+MatDoub calcMatMult(MatDoub A, MatDoub B)
+{
+    MatDoub M(A.nrows(),B.ncols());
+    
+    if (A.ncols() != B.ncols()) std::cerr << "Matrix dimension do not agree!" << endl;
+
+    for (int i=0 ; i < A.nrows() ; i++)
+    {
+        for (int j=0 ; j < B.ncols() ; j++)
+        {
+            M[i][j]=0;
+            for (int k =0 ; k < A.ncols() ; k++)
+            {
+                M[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+
+    return M;
+}
+
+MatDoub calcMatTranspose(MatDoub A)
+{
+    MatDoub M(A.ncols(),A.nrows());
+
+    for (int i=0 ; i<A.nrows() ; i++)
+    {
+        for (int j=0 ; j<A.ncols() ; j++)
+        {
+            M[j][i]=A[i][j];
+        }
+    }
+
+    return M;
 }

@@ -29,66 +29,91 @@
 #include "nr3.h"
 #include "eigen_sym.h"
 #include "calc.h"
+#include "writing.h"
 
 #define PI 3.14159265359
-#define WIDTH 12
+#define WIDTH   30
+#define WIDTH2  31
 #define PRES 7
 
-Pca::Pca() 
+Pca::Pca(int argc, char* argv[], int nSteps) 
 {
     //Default values
+    std::string arg;
+    int i=0;
     x0_  =NULL;
     x_   =NULL;
     link_=NULL;
-    ids_ =NULL;
+    id_ =NULL;
     np0_=0;
     np_=0;
     it_=0;
     enabled_=false;
     type_="";
     it0_=0;
+    
+    while (i<argc)
+    {
+        arg = argv[i];
+        if ("-pca" ==arg)
+        {
+            type_=string(argv[i+1]);
+            it0_=atoi(argv[i+2]);
+	    std::cout << std::setw(WIDTH)  <<  "PCA analysis" << ": Enabled" << std::endl;
+	    std::cout << std::setw(WIDTH2)  <<  "Types :\t" << "Cylindrical\t" << "Cartesian" << std::endl;
+            i+=3;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    allocate(nSteps);
 }
 
 Pca::~Pca()
 {
 }
 
-
-void Pca::initialise()
+void Pca::allocate(int n)
 {
-
-
-
+    //Allocate local memory for the information about the averages
+    nIter_ = 0;
+    iter_.resize(n);
+    eigv_.resize(n,9);
+    eig_.resize(n,3);
 }
 
 
 void Pca::manage(int iter, int np, int* id, double** x)
 {
+    id_=id; //attribute array;
+    np_=np;
+
     // If zeroth iteration has already been set, normal analysis
-    if (enabled_)
+    if (enabled_ && iter>it0_)
     {
-            analyse(np,x);
+            analyse(x);
     }
     else
     {
         if (iter==it0_ )
         {
-            setZeroth(np,id,x);
+            setZeroth(x);
         }
     }
 }
 
-void Pca::setZeroth(int np,int* id, double **x)
+void Pca::setZeroth(double **x)
 {
     enabled_=true;
-    np_=np;
-    np0_=np;
+    np0_=np_;
     
     //Allocate memory for x0_ and x_
     x0_ = new double*[3];
     x_ = new double*[3];
     x0t_ = new double*[3];
-    link_ = new int[np0_];
+    link_ = new int[2*np0_]; //link table is buffered up to allow for the case where particle were lost
 
     for (int i=0 ; i<3 ; i++)
     {
@@ -96,13 +121,18 @@ void Pca::setZeroth(int np,int* id, double **x)
         x_[i] = new double[np0_];
         x0t_[i] = new double[np0_];
     }
-    setParticlePositions(np,x,x0_);
 
     //Create link table
+    for (int i=0 ; i <np0_ ; i++) 
+    {
+        link_[id_[i]]=i;
+        if (id_[i]>2*np0_) std::cout<< id_[i] << endl;
+    }
 
+    setParticlePositions(x,x0_);
 }
 
-void Pca::setParticlePositions(int np, double** x, double** xp)
+void Pca::setParticlePositions(double** x, double** xp)
 {
     double temp[3];
 
@@ -124,58 +154,61 @@ void Pca::setParticlePositions(int np, double** x, double** xp)
     }
 }
 
-
-void Pca::analyse(int np, double** x)
+void Pca::analyse(double** x)
 {
+    setParticlePositions(x,x_);
+
+    //Reallign array with current one in terms of particle Ids
+    for (int i=0 ; i < np0_ ; i++)
+    {
+        x0t_[0][i] = x0_[0][link_[id_[i]]];
+        x0t_[1][i] = x0_[1][link_[id_[i]]];
+        x0t_[2][i] = x0_[2][link_[id_[i]]];
+    }
+
     MatDoub c(3,3);
-/*
-    if (np != np0_) std::cerr << "Invalid data file, number of particles was not kept constant preventing PCA" << endl;
+    MatDoub cT(3,3);
+    MatDoub m(3,3);
+
+    if (np_ != np0_) std::cerr << "Invalid data file, number of particles was not kept constant preventing PCA" << endl;
 
     for (int i=0 ; i < 3; i++)
     {
         for (int j=0 ; j < 3; j++)
         {
+            c[i][j] = calcCij(np_,x0t_[i],x_[j]);
         }
     }
 
-    c[0][0] = calcCij(np,x0[0],x[0]);
-    c[0][1] = calcCij(np,x0[0],x[1]);
-*/
+    cT=calcMatTranspose(c);
+    m=calcMatMult(c,cT); 
 
 
-   /*
-    m[0][0]=1;
-    m[0][1]=2;
-    m[0][2]=3;
-    m[1][0]=2;
-    m[1][1]=3;
-    m[1][2]=2;
-    m[2][0]=3;
-    m[2][1]=2;
-    m[2][2]=5;
-
+    //Instantiate Jacobi method to solve eigenvalues problem
     Jacobi jac(m);
 
-
-    VecDoub eigi=jac.d;
-
-    for (int i=0; i<eigi.size() ; i++)
-    {
-        std::cout << jac.d[i] <<std::endl;
-    }
-
-    std::cout<<"eigen vectors:" << std::endl;
+    VecDoub eig=jac.d;
     MatDoub eigv=jac.v;
 
-    for (int i=0; i<eigv.nrows() ; i++)
+
+
+    //Increment number of stored iterations
+    nIter_++;
+}
+
+void Pca::write(std::string path, std::string label, int nit)
+{
+    std::string filename = path+"/"+label+"_plane_"+writingIntToString(nit);
+    std::ofstream ficOut(filename.c_str());
+    /*
+    for (int i=0 ; i<planeNumber_ ; i++)
     {
-        for (int j=0; j<eigv.ncols() ; j++)
-        {
-            std::cout<<eigv[i][j] << " " ;
-        }
-        std::cout<<endl;
+	ficOut	<< std::setw(WIDTH) << std::setprecision(PRES) << pos_[i] << " "  
+		<< std::setw(WIDTH) << std::setprecision(PRES) << voidfraction_[i] << " "
+		<< std::endl;
     }
     */
+    ficOut.close();
 }
 
 
@@ -251,18 +284,7 @@ double plane::planeVoidFraction(int axis, double h)
     return area;
 }
 
-void plane::write(std::string path, std::string label, int nit)
-{
-    std::string filename = path+"/"+label+"_plane_"+writingIntToString(nit);
-    std::ofstream ficOut(filename.c_str());
-    for (int i=0 ; i<planeNumber_ ; i++)
-    {
-	ficOut	<< std::setw(WIDTH) << std::setprecision(PRES) << pos_[i] << " "  
-		<< std::setw(WIDTH) << std::setprecision(PRES) << voidfraction_[i] << " "
-		<< std::endl;
-    }
-    ficOut.close();
-}
+
 
 //Accesssors
 int plane::getType(){return planeType_;}

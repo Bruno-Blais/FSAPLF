@@ -21,6 +21,7 @@
 #include <iomanip>
 #include <fstream>
 #include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 #include <iterator>
 #include <vector>
 #include <algorithm>
@@ -143,6 +144,12 @@ options::options(int argc , char* argv[])
 	    std::cout << "Timestep fixed at : " << dt_ << std::endl;
 	    i+=2;
 	}
+        else if ("-pca" ==arg)
+        {
+            pca_=true;
+
+            i+=3;
+        }
         else if("\\"==arg)
         {
             i++;
@@ -168,7 +175,7 @@ void options::getFilesIdentification()
     string local;
     fs::path p (path_);
     nFiles_=0;
-    
+
     if (fs::exists(p))    
     {
 	// Test the validity of the path
@@ -221,6 +228,8 @@ bool options::getAveraging(){return averaging_;}
 bool options::getPlaneOn(){return planeOn_;}
 
 bool options::getTrajectories(){return trajectories_;}
+
+bool options::getPca(){return pca_;}
 
 int options::getNumberOfFiles(){return nFiles_;}
 
