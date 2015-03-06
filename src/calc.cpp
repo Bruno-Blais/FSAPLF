@@ -27,6 +27,7 @@
 #define PI 3.14159265359
 #define WIDTH 12
 #define PRES 7
+#define DEBUG 0
 
 void calcCyl(double* p1, double* p2)
 {
@@ -34,6 +35,9 @@ void calcCyl(double* p1, double* p2)
     p1[0] = sqrt(p2[0]*p2[0] + p2[1]*p2[1]);
     p1[1] = atan2(p2[1],p2[0]);
     p1[2] = p2[2];
+
+    if(DEBUG) std::cout <<" Before coordinates :" << p2[0] << " " << p2[1] << " " << p2[2] << std::endl;
+    if(DEBUG) std::cout <<" After coordinates :" << p1[0] << " " << p1[1] << " " << p1[2] << std::endl;
 }
 
 double calcMean(int n, double* x)

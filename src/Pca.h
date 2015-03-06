@@ -58,6 +58,7 @@ public :
     void enable();                                      // Start PCA analysis
     void setParticlePositions(double**,double**);       // Transform particle position to 3xnp array format
     void allocate(int);                                 // Allocate memory to store the eigenvalues and vectors
+    void debugStatistic();                              // Print information about statistic if debugging
 
     //Accessors functions
     int getType();
