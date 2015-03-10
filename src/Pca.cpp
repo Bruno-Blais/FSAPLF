@@ -37,7 +37,7 @@
 #define WIDTH   30
 #define WIDTH2  31
 #define PRES 7
-#define DEBUG 1
+#define DEBUG 0
 
 Pca::Pca(int argc, char* argv[], int nSteps) 
 {
