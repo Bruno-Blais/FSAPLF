@@ -156,7 +156,9 @@ options::options(int argc , char* argv[])
         }
 	else
 	{
-	    std::cout << "Option " << arg << " is not available" << std::endl;
+            // This is not really compatible with having each function having their own constructor
+            // Less robust, but there won't be anymore warnings now because each options can have any number of arguments
+	    // std::cout << "Option " << arg << " is not available" << std::endl;
 	    i++;
 	}
     }

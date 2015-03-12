@@ -35,13 +35,12 @@
 #define PI 3.14159265359
 #define WIDTHOUT 16
 #define WIDTH   30
-#define WIDTH2  31
+#define WIDTH2  32
 #define PRES 7
 #define DEBUG 0
 
 Pca::Pca(int argc, char* argv[], int nSteps) 
 {
-    //Default values
     std::string arg;
     int i=0;
     x0_  =NULL;
@@ -63,7 +62,7 @@ Pca::Pca(int argc, char* argv[], int nSteps)
             type_=string(argv[i+1]);
             it0_=atoi(argv[i+2]);
 	    std::cout << std::setw(WIDTH)  <<  "PCA analysis" << ": Enabled" << std::endl;
-	    std::cout << std::setw(WIDTH2)  <<  "Type :\t" << type_ << std::endl;
+	    std::cout << std::setw(WIDTH2)  <<  "Type : " << type_ << std::endl;
             i+=3;
         }
         else

@@ -1,4 +1,4 @@
-// Last Modified: Wed 14 Jan 2015 05:49:08 PM EST
+// Last Modified: Thu 12 Mar 2015 11:39:46 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -160,6 +160,21 @@ int* steps::getId()
 double** steps::getXArray()
 {
     return particles_.getXArray();
+}
+
+double** steps::getVArray()
+{
+    return particles_.getVArray();
+}
+
+double** steps::getFArray()
+{
+    return particles_.getXArray();
+}
+
+double** steps::getUArray()
+{
+    return particles_.getVArray();
 }
 
 std::vector<int> steps::getIds()

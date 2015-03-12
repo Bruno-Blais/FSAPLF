@@ -174,6 +174,9 @@ void particles::load(std::ifstream *ficIn)
             for (int j=0 ; j<3 ; j++) f_[i][j]=0.;
         }
     }
+
+    //Calculate the norm of the vectors and store them for future use
+    calcNorm();
 }
 
 void particles::print()
@@ -200,7 +203,7 @@ void particles::calcNorm()
 void particles::calcAverage()
 {
     int skip=0;
-    double perc=0.99;
+    double perc=0.999;
     std::vector<double> tempVec(2);
 
 
@@ -361,6 +364,10 @@ double* particles::getRArray() {return r_;}
 double** particles::getXArray() {return x_;}
 
 double** particles::getVArray() {return v_;}
+
+double** particles::getFArray() {return f_;}
+
+double** particles::getUArray() {return u_;}
 
 std::vector<int> particles::getIds()
 {

@@ -1,4 +1,4 @@
-// Last Modified: Wed 14 Jan 2015 05:02:52 PM EST
+// Last Modified: Thu 12 Mar 2015 11:49:38 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -59,6 +59,9 @@ public :
 
     int*     getId();
     double** getXArray();
+    double** getVArray();
+    double** getFArray();
+    double** getUArray();
 
     std::vector<int>	getIds();
     std::vector<double> getAverageV();
