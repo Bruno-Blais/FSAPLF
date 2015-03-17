@@ -80,12 +80,6 @@ int main(int argc, char* argv[])
             {
                 avg.setIter(i,stp[i].getIter());
                 avg.particles(stp[i].getNumberParticles(),stp[i].getXArray(),stp[i].getVArray(),stp[i].getFArray(),stp[i].getUArray());
-                
-                //stp[i].average();
-                //avg.setIter(i,stp[i].getIter());
-                //avg.setV(i,stp[i].getAverageV());
-                //avg.setX(i,stp[i].getAverageX());
-                //avg.setF(i,stp[i].getAverageF());
 	    }
 
 	    if (opt.getPlaneOn())

@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Mar 2015 11:49:38 AM EDT
+// Last Modified: Thu 12 Mar 2015 12:00:26 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -47,7 +47,6 @@ public :
     void setPlane(plane);			// Set the plane for plane analysis 
     void print();				// Print the entire content of the class
     void load();				// Load the corresponding data file
-    void average();				// Averaging function
     void giveParticlesToPlane();		// Give a copy of the particle pointers to the planes
     void planeAnalysis();			// Do the plane analysis
     void writePlane(std::string, std::string);
@@ -64,9 +63,5 @@ public :
     double** getUArray();
 
     std::vector<int>	getIds();
-    std::vector<double> getAverageV();
-    std::vector<double> getAverageX();
-    std::vector<double> getAverageF();
-    std::vector<double> getAverageU();
 };
 #endif

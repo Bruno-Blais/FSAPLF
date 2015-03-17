@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Mar 2015 11:39:46 AM EDT
+// Last Modified: Thu 12 Mar 2015 12:00:26 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -113,12 +113,6 @@ void steps::setTime(double dt)
     t_ = nit_ * dt;
 }
 
-void steps::average()
-{
-    particles_.calcNorm();
-    particles_.calcAverage();
-}
-
 void steps::giveParticlesToPlane()
 {
     plane_.setNumber(np_);
@@ -182,22 +176,3 @@ std::vector<int> steps::getIds()
     return particles_.getIds();
 }
 
-std::vector<double> steps::getAverageV()
-{
-    return particles_.getAverageV();
-}
-
-std::vector<double> steps::getAverageX()
-{
-    return particles_.getAverageX();
-}
-
-std::vector<double> steps::getAverageF()
-{
-    return particles_.getAverageF();
-}
-
-std::vector<double> steps::getAverageU()
-{
-    return particles_.getAverageU();
-}

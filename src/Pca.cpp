@@ -96,13 +96,16 @@ void Pca::manage(int iter, int np, int* id, double** x)
     // If zeroth iteration has already been set, normal analysis
     if (enabled_ && iter>it0_)
     {
+            if (DEBUG) std::cout << "Beggining analysis" << std::endl;
             iter_[nIter_]=iter;
             analyse(x);
     }
     else
     {
+        if (DEBUG) std::cout << " Iter : " << iter << " Required iter : " << it0_ << std::endl;
         if (iter==it0_ )
         {
+            if (DEBUG) std::cout << "Setting zeroth iteration" << std::endl;
             setZeroth(x);
         }
     }
@@ -121,9 +124,9 @@ void Pca::setZeroth(double **x)
 
     for (int i=0 ; i<3 ; i++)
     {
-        x0_[i] = new double[np0_];
-        x_[i] = new double[np0_];
-        x0t_[i] = new double[np0_];
+        x0_[i] = new double[2*np0_];
+        x_[i] = new double[2*np0_];
+        x0t_[i] = new double[2*np0_];
     }
 
     //Create link table
@@ -175,6 +178,8 @@ void Pca::analyse(double** x)
 {
     setParticlePositions(x,x_);
 
+    if (DEBUG) std::cout << "Current number of particles is : " << np_ << " Initial number was : " << np0_ << std::endl;
+
     //Reallign array with current one in terms of particle Ids
     for (int i=0 ; i < np0_ ; i++)
     {
@@ -183,6 +188,7 @@ void Pca::analyse(double** x)
         x0t_[2][i] = x0_[2][link_[id_[i]]];
     }
 
+    if (DEBUG) std::cout << "Reallignment success" << std::endl;
     if (np_ != np0_) std::cerr << "Invalid data file, number of particles was not kept constant preventing PCA" << endl;
     MatDoub c;
     MatDoub cT;

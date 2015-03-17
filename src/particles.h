@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Mar 2015 11:49:44 AM EDT
+// Last Modified: Thu 12 Mar 2015 11:59:19 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -63,9 +63,5 @@ public :
 
     std::vector<int> getIds();
 
-    std::vector<double> getAverageV();	// Return average velocity
-    std::vector<double> getAverageX();	// Return average position
-    std::vector<double> getAverageF();	// Return average force
-    std::vector<double> getAverageU();	// Return average fluid velocity
 };
 #endif

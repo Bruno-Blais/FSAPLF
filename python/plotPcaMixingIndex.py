@@ -34,7 +34,6 @@ cutoff=0.300
 fs=5.
 filterOrder=3
 annotate=True
-listAnnotate=[90, 200, 450, 650]
 
 # Figures
 plt.rcParams['figure.figsize'] = 10, 7
@@ -62,14 +61,17 @@ it=data[:,0]
 lam = data[:,1:4] # eigenvalues are sorted by default
 v=data[:,4:13]
 
-t = (it-it1) * dt
+listAnnotate=[len(it)/8., 2*len(it)/5., 3.5*len(it)/5]
+
+
+t = (it-it[0]) * dt
 fig, axes = plt.subplots(nrows=3, ncols=1)
 for i in range(0,3,1):
     plt.subplot(3,1,i+1)
-    plt.plot(t,numpy.sqrt(lam[:,i]/lam[0,i]),'-g',linewidth=2.0,label="Final Eigenvector [ %3.2f %3.2f %3.2f ] " %(v[-1,3*(i)], v[-1,3*(i)+1],v[-1,3*(i)+2]))
+    plt.plot(t,numpy.sqrt(lam[:,i]),'-g',linewidth=2.0,label="Final Eigenvector [ %3.2f %3.2f %3.2f ] " %(v[-1,3*(i)], v[-1,3*(i)+1],v[-1,3*(i)+2]))
     plt.ylabel('Mixing index ' + str(i))
     plt.ylim([-0.1,1.1])
-    y=numpy.sqrt(lam[:,i]/lam[0,i])
+    y=numpy.sqrt(lam[:,i])
     if annotate:
         for j in listAnnotate:
             plt.annotate( "[%3.2f, %3.2f, %3.2f,]" %(v[j,3*(i)+0], v[j,3*(i)+1],v[j,3*(i)+2]), 
@@ -78,7 +80,7 @@ for i in range(0,3,1):
                 )
     plt.grid(b=True, which='major', color='k', linestyle='--',linewidth=0.25) 
 
-    plt.annotate( "%3.4f" %(numpy.min(y)), xy=(numpy.max(t), numpy.min(y)), xytext=(numpy.max(t)-15, numpy.min(y)+0.1))
+    plt.annotate( "%3.4f" %(numpy.min(y)), xy=(numpy.max(t), numpy.min(y)), xytext=(numpy.max(t)-max(t)/15, numpy.min(y)+0.1))
 
     if (i==2): plt.xlabel('time [s]')
     if numpy.min(lam[:,i] > 0.7) : plt.legend(loc=3)
