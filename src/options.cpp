@@ -61,7 +61,6 @@ options::options(int argc , char* argv[])
 	arg = argv[i];
 	if ("-average" == arg)
 	{
-	    std::cout << std::setw(WIDTH) << "Averaging" << ": Enabled" << std::endl;
 	    averaging_=true;
 	    i++;
 	}

@@ -30,7 +30,7 @@
 #include "averaging.h"
 
 #define LARGE 99999.
-#define WIDTH 12
+#define WIDTH 30
 #define PRES 7
 #define DEBUG 0
 
@@ -53,6 +53,8 @@ averaging::averaging(int argc, char* argv[], int nSteps)
             perc_=std::atof(argv[i+1]);
             i+=2;
             allocate(nSteps);
+	    std::cout << std::setw(WIDTH) << "Averaging" << ": Enabled"    << std::endl;
+	    std::cout << std::setw(WIDTH) << "Percentile" << ": " << perc_ << std::endl;
         }
         else
         {
@@ -116,7 +118,7 @@ void averaging::particles(int n, double** x, double** v, double** f, double** u)
 void averaging::calcAverage()
 {
     int skip=0;
-    double perc=0.999;
+    double perc=perc_;
     std::vector<double> tempVec(2);
 
     if (DEBUG) std::cout << "Reinit" << std::endl;
