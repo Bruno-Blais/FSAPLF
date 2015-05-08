@@ -179,7 +179,7 @@ void averaging::calcAverage()
     }
 
 
-    if (DEBUG) std::cout << "Reudction of averages" << std::endl;
+    if (DEBUG) std::cout << "Reduction of averages" << std::endl;
     // Reduce the sums to get the average value
     for (int j=0 ; j<4 ; j++)
     {
