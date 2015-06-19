@@ -1,9 +1,9 @@
-CC = g++ -fopenmp
-CFLAGS =  -g -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized 
+CC = g++ -fopenmp 
+CFLAGS = -std=c++11 -O2 -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitialized 
 EXEC_NAME = fsaplf
 INCLUDES = 
 LIBS = -lboost_system -lboost_filesystem -lboost_regex
-OBJ_FILES = main.o particles.o terminal.o options.o steps.o averaging.o boxes.o plane.o writing.o trajectories.o Pca.o calc.o
+OBJ_FILES = main.o particles.o Pca.o terminal.o options.o steps.o averaging.o boxes.o plane.o writing.o trajectories.o MixingIndex.o calc.o eigen_sym.o
 INSTALL_DIR = ../../test/
 
 all : $(EXEC_NAME)

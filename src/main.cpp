@@ -10,9 +10,9 @@
 *
 ********************************************************************************************/
 
-/*******************
+/**********************
 *  GENERAL INCLUDES
-********************/
+**********************/
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -20,15 +20,16 @@
 #include <fstream>
 #include <omp.h>
 
-/********************
+/*********************
 * HEADER INCLUDES
-********************/
+*********************/
 #include "options.h"
 #include "steps.h"
 #include "particles.h"
 #include "averaging.h"
 #include "terminal.h"
 #include "trajectories.h"
+#include "MixingIndex.h"
 #include "Pca.h"
 
 using namespace std;
@@ -42,7 +43,6 @@ int main(int argc, char* argv[])
     steps* stp;
     trajectories trj;
 
-
     //Options constructor parses the input from the terminal ---> this is to be deprecated 
     options opt(argc, argv);
 
@@ -51,10 +51,10 @@ int main(int argc, char* argv[])
 
     // Constructors that use the new API
     //-----------------------------------------
-    Pca       pca(argc, argv, opt.getNumberOfFiles());
-    averaging avg(argc, argv, opt.getNumberOfFiles());
+    MixingIndex     mixingIndex(argc, argv, opt.getNumberOfFiles());
+    Pca             pca(argc,argv);
+    averaging       avg(argc, argv, opt.getNumberOfFiles());
     
-
     // Allocate the steps
     stp = new steps[opt.getNumberOfFiles()];
    
@@ -64,8 +64,6 @@ int main(int argc, char* argv[])
     // Begin progress bar
     terminalLoadBarInit();
     
-    // Parallelism will be done on this loop using openmp, it does not work right now 
-    //#pragma omp parallel for
     for (int i=0 ; i<opt.getNumberOfFiles(); i++)
     {
 	    stp[i].load();
@@ -96,6 +94,11 @@ int main(int argc, char* argv[])
 		trj.setStep(i, stp[i].getNumberParticles(),stp[i].getIds(),stp[i].getXArray());
 	    }
 
+            if (opt.getMixingIndex())
+            {
+                mixingIndex.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
+            }
+            
             if (opt.getPca())
             {
                 pca.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
@@ -118,7 +121,7 @@ int main(int argc, char* argv[])
     // Output of global results
 
     if (opt.getAveraging()) avg.writeFile(opt.getOutputPath(), opt.getLabel());
-    if (opt.getPca()) pca.write(opt.getOutputPath(), opt.getLabel());
+    if (opt.getMixingIndex()) mixingIndex.write(opt.getOutputPath(), opt.getLabel());
 
     terminalClose();
     return 0; 

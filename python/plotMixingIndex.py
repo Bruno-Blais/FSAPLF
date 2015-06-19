@@ -27,22 +27,26 @@ import matplotlib.pyplot as plt
 #********************************
 #   OPTIONS AND USER PARAMETERS
 #********************************
-dt=1e-5
-it1=1700000
+dt=1
 pdf=False
-cutoff=0.300
-fs=5.
-filterOrder=3
 annotate=True
 
-# Figures
+#********************************
+#   Anotation options
+#********************************
+lastAnnotationShift=0.075
+
+#********************************
+#   Figures options
+#********************************
+
 plt.rcParams['figure.figsize'] = 10, 7
 params = {'backend': 'ps',
-             'axes.labelsize': 16,
-             'text.fontsize': 16,
-             'legend.fontsize': 16,
-             'xtick.labelsize': 15,
-             'ytick.labelsize': 15,
+             'axes.labelsize': 20,
+             'text.fontsize': 20,
+             'legend.fontsize': 18,
+             'xtick.labelsize': 18,
+             'ytick.labelsize': 18,
              'text.usetex': True,
              }
 
@@ -61,7 +65,7 @@ it=data[:,0]
 lam = data[:,1:4] # eigenvalues are sorted by default
 v=data[:,4:13]
 
-listAnnotate=[len(it)/8., 2*len(it)/5., 3.5*len(it)/5]
+listAnnotate=[len(it)/4., 2*len(it)/4., 3.*len(it)/4]
 
 
 t = (it-it[0]) * dt
@@ -70,17 +74,17 @@ for i in range(0,3,1):
     plt.subplot(3,1,i+1)
     plt.plot(t,numpy.sqrt(lam[:,i]),'-g',linewidth=2.0,label="Final Eigenvector [ %3.2f %3.2f %3.2f ] " %(v[-1,3*(i)], v[-1,3*(i)+1],v[-1,3*(i)+2]))
     plt.ylabel('Mixing index ' + str(i))
-    plt.ylim([-0.1,1.1])
+    plt.ylim([-0.1,2.5])
     y=numpy.sqrt(lam[:,i])
     if annotate:
         for j in listAnnotate:
             plt.annotate( "[%3.2f, %3.2f, %3.2f,]" %(v[j,3*(i)+0], v[j,3*(i)+1],v[j,3*(i)+2]), 
-                    xy=(t[j], y[j]), xytext=(t[j],y[j]+0.1),
+                    xy=(t[j], y[j]), xytext=(t[j],y[j]+0.3),
                     arrowprops=dict(facecolor='black', shrink=0.05),
                 )
     plt.grid(b=True, which='major', color='k', linestyle='--',linewidth=0.25) 
 
-    plt.annotate( "%3.4f" %(numpy.min(y)), xy=(numpy.max(t), numpy.min(y)), xytext=(numpy.max(t)-max(t)/15, numpy.min(y)+0.1))
+    plt.annotate( "%3.4f" %(y[-1]), xy=(numpy.max(t), numpy.min(y)), xytext=(numpy.max(t)-lastAnnotationShift*max(t), numpy.min(y)+0.1))
 
     if (i==2): plt.xlabel('time [s]')
     if numpy.min(lam[:,i] > 0.7) : plt.legend(loc=3)

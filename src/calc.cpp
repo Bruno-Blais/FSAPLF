@@ -85,6 +85,7 @@ MatDoub calcMatMult(MatDoub A, MatDoub B)
     
     if (A.ncols() != B.ncols()) std::cerr << "Matrix dimension do not agree!" << endl;
 
+    #pragma omp parallel for
     for (int i=0 ; i < A.nrows() ; i++)
     {
         for (int j=0 ; j < B.ncols() ; j++)

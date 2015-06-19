@@ -12,9 +12,9 @@
 *******************************************************************************************/
 
 
-//*******************
-//  GENERAL INCLUDES
-//*******************
+/*********************
+*  GENERAL INCLUDES
+*********************/
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -37,9 +37,9 @@
 #define WIDTH   30
 #define WIDTH2  32
 #define PRES 7
-#define DEBUG 0
+#define DEBUG 1
 
-Pca::Pca(int argc, char* argv[], int nSteps) 
+Pca::Pca(int argc, char* argv[]) 
 {
     std::string arg;
     int i=0;
@@ -61,43 +61,42 @@ Pca::Pca(int argc, char* argv[], int nSteps)
         {
             type_=string(argv[i+1]);
             it0_=atoi(argv[i+2]);
+            nSample_=atoi(argv[i+3]); // TODO Right nSample is overwritten with the number of particles 
 	    std::cout << std::setw(WIDTH)  <<  "PCA analysis" << ": Enabled" << std::endl;
 	    std::cout << std::setw(WIDTH2)  <<  "Type : " << type_ << std::endl;
-            i+=3;
+            i+=4;
         }
+	if ("-out" ==arg)
+	{
+	    path_ = argv[i+1];
+	    i ++;
+	}
+        if ("-label" == arg)
+	{
+	    label_ = argv[i+1];
+	    i++;
+	}
         else
         {
             i++;
         }
     }
-
-    allocate(nSteps);
 }
 
 Pca::~Pca()
 {
 }
 
-void Pca::allocate(int n)
-{
-    //Allocate local memory for the information about the averages
-    nIter_ = 0;
-    iter_.resize(n);
-    eigv_.resize(n,9);
-    eig_.resize(n,3);
-}
-
-
 void Pca::manage(int iter, int np, int* id, double** x)
 {
     id_=id; //attribute array;
+    it_=iter;
     np_=np;
 
     // If zeroth iteration has already been set, normal analysis
     if (enabled_ && iter>it0_)
     {
             if (DEBUG) std::cout << "Beggining analysis" << std::endl;
-            iter_[nIter_]=iter;
             analyse(x);
     }
     else
@@ -141,44 +140,26 @@ void Pca::setZeroth(double **x)
 
 void Pca::setParticlePositions(double** x, double** xp)
 {
-    double temp[3];
-
-
-    if(type_==string("fullCylindrical") || type_==string("FullCylindrical"))
+    //Cartesian coordinates are stored, this is just a copy operation
+    for (int i=0 ; i<np0_ ; i++)
     {
-        for (int i=0 ; i< np0_ ; i++)
-        {
-            calcCyl(temp,x[i]);
-            for (int j=0 ; j<3 ; j++) xp[j][i] = temp[j]; 
-        }
-    }
-    
-    else if(type_==string("cylindrical") || type_==string("Cylindrical"))
-    {
-        for (int i=0 ; i< np0_ ; i++)
-        {
-            calcCyl(temp,x[i]);
-            xp[0][i]=temp[0];
-            xp[1][i]=temp[2];
-            xp[2][i]=temp[1];
-        }
-    }
-
-    else if(type_==string("cartesian") || type_==string("Cartesian"))
-    {
-        //Cartesian coordinates are stored, this is just a copy operation
-        for (int i=0 ; i<np0_ ; i++)
-        {
-            for (int j=0 ; j<3 ; j++) xp[j][i] = x[i][j];
-        }
+        for (int j=0 ; j<3 ; j++) xp[j][i] = x[i][j];
     }
 }
 
 void Pca::analyse(double** x)
 {
+    int ii;
+    int jj;
+    
+    if (DEBUG) std::cout << "Setting the position of the particles in the right arrangement" << std::endl;
+
     setParticlePositions(x,x_);
 
     if (DEBUG) std::cout << "Current number of particles is : " << np_ << " Initial number was : " << np0_ << std::endl;
+    
+    // Sanity check
+    if (np_ != np0_) std::cerr << "Invalid data file, number of particles was not kept constant preventing PCA" << endl;
 
     //Reallign array with current one in terms of particle Ids
     for (int i=0 ; i < np0_ ; i++)
@@ -188,163 +169,79 @@ void Pca::analyse(double** x)
         x0t_[2][i] = x0_[2][link_[id_[i]]];
     }
 
-    if (DEBUG) std::cout << "Reallignment success" << std::endl;
-    if (np_ != np0_) std::cerr << "Invalid data file, number of particles was not kept constant preventing PCA" << endl;
+    if (DEBUG) std::cout << "Reallignment success..." << std::endl;
     MatDoub c;
     MatDoub cT;
     MatDoub m;
 
-
-
-    // --- Cylindrical coordinates
-    // projection of the mixing index in the r and z subsspace
-    // Actually this seems like the generic 2D case in a way
-    if(type_==string("cylindrical") || type_==string("Cylindrical"))
-    {
-        c.resize(2,2);
-        cT.resize(2,2);
-        m.resize(2,2);
-
-        for (int i=0 ; i < 2; i++)
-        {
-            for (int j=0 ; j < 2; j++)
-            {
-                c[i][j] = calcCij(np_,x0t_[j],x_[i]);
-            }
-        }
-
-        cT=calcMatTranspose(c);
-        m=calcMatMult(c,cT); 
-
-        //Instantiate Jacobi method to solve eigenvalues problem
-        Jacobi jac(m);
-
-        // extract eigen values and eigenvectors
-        VecDoub eig=jac.d;
-        MatDoub eigv=jac.v;
-
-        for (int i =0 ; i <eig.size() ; i++)
-        {
-            eig_[nIter_][i] = eig[i];
-        }
-        eig_[nIter_][2]=0;
-
-        for (int i =0 ; i <eigv.ncols() ; i++)
-        {
-            for (int j =0 ; j <eigv.nrows() ; j++) 
-            {
-                eigv_[nIter_][3*i+j] = eigv[j][i];
-            }
-            eigv_[nIter_][3*i+2]=0.;
-        }
-    }
-
-    // --- Cartesian coordinates or full cylindrical coordinates
     // --- Actually this is just the general 3D case...
     // Solution in x y z plane
-    else if(type_==string("cartesian")       || type_==string("Cartesian") ||
-            type_==string("fullCylindrical") || type_==string("FullCylindrical")  )
+    c.resize(np0_*3,np0_*3);
+    cT.resize(np0_*3,np0_*3);
+    m.resize(np0_*3,np0_*3);
+
+    if (DEBUG) std::cout << "Matrix resizing is over..." << std::endl;
+
+    for (int i=0 ; i<np0_; i++)
     {
-        c.resize(3,3);
-        cT.resize(3,3);
-        m.resize(3,3);
-
-        for (int i=0 ; i < 3; i++)
+        for (int j=0 ; j<np0_; j++)
         {
-            for (int j=0 ; j < 3; j++)
+            for (int k=0 ; k<3 ; k++)
             {
-                c[i][j] = calcCij(np_,x0t_[j],x_[i]);
-            }
-        }
-
-        cT=calcMatTranspose(c);
-        m=calcMatMult(c,cT); 
-
-        if(DEBUG)
-        {
-            calcPrintMat(c,"C");
-            calcPrintMat(cT,"CT");
-            calcPrintMat(m,"M");
-            debugStatistic();
-        }
-
-        //Instantiate Jacobi method to solve eigenvalues problem
-        Jacobi jac(m);
-
-        // extract eigen values and eigenvectors
-        VecDoub eig=jac.d;
-        MatDoub eigv=jac.v;
-
-        for (int i =0 ; i <eig.size() ; i++)
-        {
-            eig_[nIter_][i] = eig[i];
-        }
-
-        for (int i =0 ; i <eigv.ncols() ; i++)
-        {
-            for (int j =0 ; j <eigv.nrows() ; j++) 
-            {
-                eigv_[nIter_][eigv.nrows()*i+j] = eigv[j][i];
+                ii = (i*3)+k;
+                jj= (j*3)+k;
+                c[ii][jj] = x0t_[k][i]*x_[k][j];
             }
         }
     }
+
+    if (DEBUG) std::cout <<"C matrix has been built..." <<std::endl;
+
+    cT=calcMatTranspose(c);
+
+    if (DEBUG) std::cout <<"C matrix has been transposed..." << std::endl;
     
-    //Increment number of stored iterations
-    nIter_++;
+    m=calcMatMult(c,cT); 
+
+    if (DEBUG) std::cout << "Symmetric matrices built..." << std::endl;
+
+/*
+    if(DEBUG)
+    {
+        calcPrintMat(c,"C");
+        calcPrintMat(cT,"CT");
+        calcPrintMat(m,"M");
+    }
+*/
+
+    //Instantiate Jacobi method to solve eigenvalues problem
+    Jacobi jac(m);
+
+    if(DEBUG) std::cout <<"Jacobi system has been solved" << std::endl;
+
+    //VecDoub eig(jac.d);
+    //MatDoub eigv(jac.v);
+    
+    write(jac.d,jac.v);
 }
 
-void Pca::debugStatistic()
+void Pca::write(VecDoub eig, MatDoub eigv)
 {
-    std::cout<< "x0 Mean: " << calcMean(np_,x0t_[0])<<std::endl; 
-    std::cout<< "x0 Mean: " << calcMean(np_,x0_[0])<<std::endl;
-    std::cout<< "x0 Mean: " << calcMean(np_,x_[0])<<std::endl;
-    std::cout<< "y0 Mean: " << calcMean(np_,x0t_[1])<<std::endl; 
-    std::cout<< "y0 Mean: " << calcMean(np_,x0_[1])<<std::endl;
-    std::cout<< "y0 Mean: " << calcMean(np_,x_[1])<<std::endl;
-    std::cout<< "z0 Mean: " << calcMean(np_,x0t_[2])<<std::endl; 
-    std::cout<< "z0 Mean: " << calcMean(np_,x0_[2])<<std::endl;
-    std::cout<< "z0 Mean: " << calcMean(np_,x_[2])<<std::endl;
-
-    std::cout<< "x0 StdDev: " << calcStdDev(np_,x0t_[0])<<std::endl; 
-    std::cout<< "x0 StdDev: " << calcStdDev(np_,x0_[0])<<std::endl;
-    std::cout<< "x0 StdDev: " << calcStdDev(np_,x_[0])<<std::endl;
-    std::cout<< "y0 StdDev: " << calcStdDev(np_,x0t_[1])<<std::endl; 
-    std::cout<< "y0 StdDev: " << calcStdDev(np_,x0_[1])<<std::endl;
-    std::cout<< "y0 StdDev: " << calcStdDev(np_,x_[1])<<std::endl;
-    std::cout<< "z0 StdDev: " << calcStdDev(np_,x0t_[2])<<std::endl; 
-    std::cout<< "z0 StdDev: " << calcStdDev(np_,x0_[2])<<std::endl;
-    std::cout<< "z0 StdDev: " << calcStdDev(np_,x_[2])<<std::endl;
-        
-}
-
-void Pca::write(std::string path, std::string label)
-{
-    std::string filename = path+"/"+label+"_pca";
+    std::string filename = path_+"/"+label_+"_pca_"+std::string(std::to_string(it_));
     std::ofstream ficOut(filename.c_str());
 
-    ficOut	<< std::setw(WIDTHOUT) << "iter " 
-        << std::setw(WIDTHOUT) << "L1 " 	    
-        << std::setw(WIDTHOUT) << "L2 " 	
-        << std::setw(WIDTHOUT) << "L3 " 	    
-        << std::setw(WIDTHOUT) << "V1-1 " 	
-        << std::setw(WIDTHOUT) << "V1-2 " 	    
-        << std::setw(WIDTHOUT) << "V1-3 " 	
-        << std::setw(WIDTHOUT) << "V2-1 " 	
-        << std::setw(WIDTHOUT) << "V2-2 " 	    
-        << std::setw(WIDTHOUT) << "V2-3 " 	
-        << std::setw(WIDTHOUT) << "V3-1 " 	
-        << std::setw(WIDTHOUT) << "V3-2 " 	    
-        << std::setw(WIDTHOUT) << "V3-3 " 	
+    ficOut	
+        << std::setw(WIDTHOUT) << "L" 	    
+        << std::setw(WIDTHOUT) << "V" 	
         << std::endl;
 
-    for (int i=0 ; i<nIter_ ; i++)
+    if(DEBUG) std::cout <<"Size of eigv_ is : " << eigv.nrows() << " " << eigv.ncols() << std::endl;
+        
+    for (int i=0 ; i<eigv.nrows() ; i++)
     {
-        ficOut << std::setw(WIDTHOUT);
-	ficOut << std::setprecision(PRES);
-	ficOut	<< iter_[i] << " " ;  
-	for (int j=0 ; j<3 ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << eig_[i][j]  ;
-        for (int j=0 ; j<9 ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << eigv_[i][j]  ;
-	ficOut << std::endl;
+        ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << eig[i]; 
+        for (int j=0 ; j<eigv.ncols() ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << eigv[i][j];
+        ficOut << std::endl;
     }
     ficOut.close();
 }

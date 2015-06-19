@@ -42,6 +42,7 @@ private :
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
     bool box_;			    // Enables region boxing for averaging analysis
     bool pca_;                      // Enables principal component analysis
+    bool mixingIndex_;              // Enables Mixing Index analysis (Doucet et al. 2008)
     
     double dt_;			    // Timestep
 
@@ -78,6 +79,7 @@ public :
     bool getPlaneOn();
     bool getTrajectories();
     bool getPca();
+    bool getMixingIndex();
     int getTrajectoriesType();
     int getNumberOfFiles();	    // Accessor for the number of files
     int getBatchFreq();

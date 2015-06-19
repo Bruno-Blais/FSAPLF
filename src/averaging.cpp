@@ -43,6 +43,12 @@ averaging::averaging(int argc, char* argv[], int nSteps)
     x_=NULL;
     f_=NULL;
     u_=NULL;
+    
+    rA_=NULL;
+    vA_=NULL;
+    fA_=NULL;
+    uA_=NULL;
+    xA_=NULL;
 
     while (i<argc)
     {
@@ -69,10 +75,10 @@ averaging::~averaging()
 {
     for (int i =0 ; i<n_ ;i++)
     {
-	delete vA_[i];
-	delete xA_[i];
-	delete fA_[i];
-	delete uA_[i];
+        delete vA_[i];
+        delete xA_[i];
+        delete fA_[i];
+        delete uA_[i];
     }
     delete vA_;
     delete xA_;

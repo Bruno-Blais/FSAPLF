@@ -48,7 +48,10 @@ options::options(int argc , char* argv[])
     averaging_=false;
     trajectories_=false;
     planeOn_=false;
-    batch_=false;	    
+    batch_=false;
+    box_=false;
+    pca_=false;
+    mixingIndex_=false;
     batchFreq_=999999;  
     path_="./";		    // Default path is directory of the execution
     outputPath_="./";	    // Default output is local directory
@@ -94,12 +97,22 @@ options::options(int argc , char* argv[])
 	    std::cout << std::setw(WIDTH) <<  "Output path" << ": " <<  outputPath_ << std::endl;
 	    i +=2;
 	}
+	else if ("-mixingIndex" == arg)
+	{
+            mixingIndex_=true;
+            i++;
+	}
 	else if ("-path" == arg)
 	{
 	    path_ = argv[i+1];
 	    std::cout << std::setw(WIDTH) << "Dumps path" << ": " <<  path_ << std::endl; 
 	    i+=2;
 	}
+        else if ("-pca" ==arg)
+        {
+            pca_=true;
+            i++;
+        }
 	else if ("-plane" ==arg)
 	{
 	    std::cout << std::setw(WIDTH)  <<  "Porosity analysis" << ": Enabled" << std::endl;
@@ -143,12 +156,7 @@ options::options(int argc , char* argv[])
 	    std::cout << "Timestep fixed at : " << dt_ << std::endl;
 	    i+=2;
 	}
-        else if ("-pca" ==arg)
-        {
-            pca_=true;
 
-            i+=3;
-        }
         else if("\\"==arg)
         {
             i++;
@@ -226,13 +234,15 @@ void options::getFilesIdentification()
 
 bool options::getAveraging(){return averaging_;}
 
+bool options::getMixingIndex(){return mixingIndex_;}
+
+bool options::getPca(){return pca_;}
+
 bool options::getPlaneOn(){return planeOn_;}
 
 bool options::getTrajectories(){return trajectories_;}
 
-bool options::getPca(){return pca_;}
-
-int options::getNumberOfFiles(){return nFiles_;}
+int  options::getNumberOfFiles(){return nFiles_;}
 
 int options::getTrajectoriesType(){return trajectoriesType_;}
 
