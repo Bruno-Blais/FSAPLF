@@ -1,7 +1,67 @@
-Command examples :
+#-----------------------------------
+# Command Line Arguments / modes
+#-----------------------------------
+
+Notes : all command line arguments should be given as lowercase letters
+
+---
+BATCH:
+    -batch nFlush
+
+Flushes the memory after nFlush files are processed. This prevents memory overload. 
+By default -batch is false, but eventually a default value will be put in.
+---
+
+---
+EXT:
+    -ext extension
+
+Extension of the file your want to post-process (i.e .dump)
+---
+
+---
+OUT:
+    -out path
+
+Path of the output files that will be made by FSAPLF
+
+---
+PLANE
+    -plane type axis nPlanes size beggining end
+
+Types : Square, circle rectangle
+Axis : 0-x , 1-y, 2-z
+size : Square : L, circle R, retancle L and W
+
+Carry out a porosity analysys using the interesection between the particles and a number of plane decided by the user.
+This gives a much finer analysis than the void fraction projection onto the mesh
+---
+
+---
+PCA
+    -pca 
+
+---
+
+#-----------------------------------
+# Description of the software
+#-----------------------------------
+
+
+#-----------------------------------
+# Examples
+#-----------------------------------
 
 # Shear layer case
-# Launch averaging and plane analysis along z axis with 200
-# square planes of dimension 0.025
-./fsaplf -ext .dump -average -out ./out -path ./post -plane 1 2 200 0.025 0.001 0.025
+# Launch averaging and plane analysis along z axis with 200 square planes of dimension 0.025
+fsaplf -ext .dump -average -out ./out -path ./post -plane 1 2 200 0.025 0.001 0.025
 
+# Mixing case
+# Launch averaging and plane analysis along z axis with 200 circular planes of dimension 0.025
+fsaplf -ext .dump -average 0.999 -out ./outFsaplf/ -path ./post -plane 2 2 200 0.1825 0.0001 0.365  -batch 10
+
+#-------------------------
+#Design Decisions & Issues
+#-------------------------
+
+- Right now the entire data structure is based around C-type arrays. Everything should be migrated to C++ type vectors, this would be much better

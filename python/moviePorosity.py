@@ -1,9 +1,9 @@
-# This script animates the porosity results from FSAPLF
+#   This script animates the porosity results from FSAPLF
 #
-# A folder must be given as argument?
 #
-# Author : Bruno Blais
-# Last modified : 24-02-2014
+#   Needs to be restructured to take the data automatically
+#
+#   Author : Bruno Blais
 
 #Python imports
 #----------------
@@ -13,24 +13,46 @@ import numpy
 import math
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import glob
+import re
 #----------------
 
 #********************************
 #   OPTIONS AND USER PARAMETERS
 #********************************
 
-#Initial time of simulation, final time and time increment must be specified by user
-t0=int(sys.argv[2])
-tf=int(sys.argv[4])
-dT=int(sys.argv[3])
-nt=int((tf-t0)/dT)
-t=t0
+label="plane"
+folder="./"
+
+#--------------------------------
+# Functions
+#--------------------------------
+
+def naturalSort(l): 
+    convert = lambda text: int(text) if text.isdigit() else text.lower() 
+    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
+    return sorted(l, key = alphanum_key)
+
+
+#-------------------------------
+# MAIN
+#-------------------------------
+
+if (len(sys.argv)<2):
+    raise Exception('A folder argument needs to be specified')
+
+if (len(sys.argv)==3):
+    label=sys.argv[2]
 
 folder=sys.argv[1]
 
+# Acquire all the files from the folder and sort them in a coherent manner
+files=glob.glob(folder+"/*"+label+"*")
+files=naturalSort(files)
+
 #Load first file to acquire the axis
-print "Acquiring time : ", t0
-fname=folder + str(t0)
+print "Acquiring time : ", files[0]
+fname= files[0]
 x,phi = numpy.loadtxt(fname, unpack=True) # Load data from text file
 print "Time acquired"
 
@@ -55,14 +77,15 @@ def onClick(event):
     pause ^= True
 
 def animate(t):
-    print "Plotting time : ", t
-    fname=folder + str(t)
+    print "Plotting time : ", files[t]
+    fname=files[t]
     x,phi = numpy.loadtxt(fname, unpack=True) # Load data from text file
     line.set_data(x,phi) # Update the data
-    time_text.set_text(time_template%(t))
+    #time_text.set_text(time_template%(t))
+    time_text.set_text(files[t])
     return line,time_text
 
-ani = animation.FuncAnimation(fig, animate,range(t0,tf,dT), blit=True, init_func=init)
+ani = animation.FuncAnimation(fig, animate,range(0,len(files)), blit=True, init_func=init)
 
 plt.show()
 

@@ -1,4 +1,4 @@
-// Last Modified: Sat 18 Oct 2014 06:53:49 PM CEST
+// Last Modified: Wed 26 Aug 2015 10:52:48 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -75,10 +75,10 @@ void plane::setDimensions(double l, double w)
     dimensions_[1]=w;
 }
 
-void plane::setLength(double bottom, double top)
+void plane::setLength(double beg, double end)
 {
-    length_[0]=bottom;
-    length_[1]=top;
+    length_[0]=beg;
+    length_[1]=end;
 }
 
 void plane::setNumber(int np)
@@ -168,6 +168,6 @@ void plane::write(std::string path, std::string label, int nit)
 }
 
 //Accesssors
-int plane::getType(){return planeType_;}
-int plane::getAxis(){return planeAxis_;}
-int plane::getNumber(){return planeNumber_;}
+int plane::getType()   {return planeType_;}
+int plane::getAxis()   {return planeAxis_;}
+int plane::getNumber() {return planeNumber_;}
