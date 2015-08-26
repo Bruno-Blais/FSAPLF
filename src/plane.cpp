@@ -1,4 +1,3 @@
-// Last Modified: Wed 26 Aug 2015 10:52:48 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -41,6 +40,43 @@ plane::plane() : dimensions_(6), length_(6)
     planeType_=0;
     planeAxis_=0;    
     planeNumber_=0;
+
+    /*
+    int i=1;
+    //Parse the options from the terminal to know which mode to enable
+    while (i<argc)
+    {
+
+	else if ("-plane" ==arg)
+	{
+	    std::cout << std::setw(WIDTH)  <<  "Porosity analysis" << ": Enabled" << std::endl;
+	    std::cout << std::setw(WIDTH2) << " " << "Arguments : Type, axis, number of planes, dimension, beggining, end"<<std::endl;
+	    std::cout << std::setw(WIDTH2) << " " << "Type: 1- square analysis\t2- circle \t3- rectangle" << std::endl;
+	    planeOn_=true;
+	   
+	    plane_.set(atoi(argv[i+1]),atoi(argv[i+2]),atoi(argv[i+3]));
+	    if (plane_.getType() <3)
+	    {
+		plane_.setDimensions(atof(argv[i+4]));
+		plane_.setLength(atof(argv[i+5]),atof(argv[i+6]));
+                i+=7;
+	    }
+
+            // Rectangle
+            if (plane_.getType() == 3)
+            {
+                plane_.setDimensions(atof(argv[i+4]),atof(argv[i+5]));
+                plane_.setLength(atof(argv[i+6]),atof(argv[i+7]));
+                i+=8;
+            }
+	}
+
+        else
+        {
+            i++;
+        }
+    }
+    */
 }
 
 plane::~plane()

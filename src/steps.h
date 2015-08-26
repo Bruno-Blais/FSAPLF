@@ -1,4 +1,4 @@
-// Last Modified: Thu 12 Mar 2015 12:00:26 PM EDT
+// Last Modified: Wed 26 Aug 2015 04:05:05 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -34,7 +34,7 @@ private :
     * Current implementation of the class is more generic than needed in order
     * to allow for more complex analysis in the future like holed-up circle  or circles that 
     * do not cover the entire domain
-    * This will eventually me pushed all into a different class maybe?
+    * This will eventually be pushed all into a different class maybe?
     */
     plane plane_;
 

@@ -117,7 +117,7 @@ options::options(int argc , char* argv[])
 	{
 	    std::cout << std::setw(WIDTH)  <<  "Porosity analysis" << ": Enabled" << std::endl;
 	    std::cout << std::setw(WIDTH2) << " " << "Arguments : Type, axis, number of planes, dimension, beggining, end"<<std::endl;
-	    std::cout << std::setw(WIDTH2) << " " << "Type: 1- square analysis\t2- circle \t3- rectangle" << std::endl;
+	    std::cout << std::setw(WIDTH2) << " " << "Type: 1- square \t 2- circle \t3- rectangle" << std::endl;
 	    planeOn_=true;
 	   
 	    plane_.set(atoi(argv[i+1]),atoi(argv[i+2]),atoi(argv[i+3]));
