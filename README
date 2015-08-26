@@ -65,3 +65,5 @@ fsaplf -ext .dump -average 0.999 -out ./outFsaplf/ -path ./post -plane 2 2 200 0
 #-------------------------
 
 - Right now the entire data structure is based around C-type arrays. Everything should be migrated to C++ type vectors, this would be much better
+- The structure for the plane and the steps is very approximate (using a weird copy constructor that is kept within options and relaunched every iteration)
+     however it works well so I will keep it that way for a moment (aka forever)

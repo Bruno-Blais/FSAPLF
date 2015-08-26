@@ -4,7 +4,7 @@
 *   
 *   
 *   Author  : Bruno Blais
-*   File    : averaging.cpp
+*   File    : Averaging.cpp
 *
 *   Description :   Contains the averaged properties for all files
 *
@@ -27,14 +27,14 @@
 /********************
 * HEADER INCLUDES
 ********************/
-#include "averaging.h"
+#include "Averaging.h"
 
 #define LARGE 99999.
 #define WIDTH 30
 #define PRES 7
 #define DEBUG 0
 
-averaging::averaging(int argc, char* argv[], int nSteps) 
+Averaging::Averaging(int argc, char* argv[], int nSteps) 
 {
     int i=0;
     std::string arg;
@@ -71,7 +71,7 @@ averaging::averaging(int argc, char* argv[], int nSteps)
     if (DEBUG) std::cout << "Constructor over" << std::endl;
 }
 
-averaging::~averaging()
+Averaging::~Averaging()
 {
     for (int i =0 ; i<n_ ;i++)
     {
@@ -87,7 +87,7 @@ averaging::~averaging()
     delete rA_;
 }
 
-void averaging::allocate(int n)
+void Averaging::allocate(int n)
 {
     //Allocate local memory for the information about the averages
     n_ = n;
@@ -108,7 +108,7 @@ void averaging::allocate(int n)
     }
 }
 
-void averaging::particles(int n, double** x, double** v, double** f, double** u)
+void Averaging::particles(int n, double** x, double** v, double** f, double** u)
 {
     np_=n;
     x_=x;
@@ -121,7 +121,7 @@ void averaging::particles(int n, double** x, double** v, double** f, double** u)
 }
 
 
-void averaging::calcAverage()
+void Averaging::calcAverage()
 {
     int skip=0;
     double perc=perc_;
@@ -241,7 +241,7 @@ void averaging::calcAverage()
    }
 }
 
-std::vector<double> averaging::calcPercentageMax(double** x, int dim, double perc)
+std::vector<double> Averaging::calcPercentageMax(double** x, int dim, double perc)
 {
     // This function extracts the maximal and minimal percentage amount. For instance, if you have 100 data point
     // and your specify perc is 0.99, it will go and grab the 99 maximal and the 99 minimal data point of each thing
@@ -276,31 +276,31 @@ std::vector<double> averaging::calcPercentageMax(double** x, int dim, double per
     return percMax;
 }
 
-void averaging::setIter(int k, int iter)
+void Averaging::setIter(int k, int iter)
 {
     nIter_[k]=iter;
     cIndex_=k;
 }
 
-void averaging::setV (int k, std::vector<double> v)
+void Averaging::setV (int k, std::vector<double> v)
 {
     for (int i=0 ; i<24 ; i++)
 	vA_[k][i] = v[i];
 }
 
-void averaging::setX (int k, std::vector<double> v)
+void Averaging::setX (int k, std::vector<double> v)
 {
     for (int i=0 ; i<24 ; i++)
 	xA_[k][i] = v[i];
 }
 
-void averaging::setF (int k, std::vector<double> v)
+void Averaging::setF (int k, std::vector<double> v)
 {
     for (int i=0 ; i<24 ; i++)
 	fA_[k][i] = v[i];
 }
 
-void averaging::writeFile(std::string path, std::string label)
+void Averaging::writeFile(std::string path, std::string label)
 {
     writeSingleFile(path,label,"x",xA_,24);
     writeSingleFile(path,label,"v",vA_,24);
@@ -308,7 +308,7 @@ void averaging::writeFile(std::string path, std::string label)
     //writeSingleFile(path,label,"u",uA_,24);
 }
 
-void averaging::writeSingleFile(std::string path, std::string label, std::string var, double** x, int l)
+void Averaging::writeSingleFile(std::string path, std::string label, std::string var, double** x, int l)
 {
     std::string filename = path+"/"+label+"_averaged_"+var;
     std::ofstream ficOut(filename.c_str());

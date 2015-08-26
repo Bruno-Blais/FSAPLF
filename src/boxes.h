@@ -1,13 +1,12 @@
-// Last Modified: Fri 13 Jun 2014 11:49:13 AM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
 *   
 *   
 *   Author  : Bruno Blais
-*   File    : averaging.h
+*   File    : boxes.h
 *
-*   Description : Container class for all the averaged properties of all files
+*   Description : Container class for 
 *
 *******************************************************************************************/
 

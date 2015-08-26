@@ -1,11 +1,11 @@
-// Last Modified: Thu 12 Mar 2015 11:40:16 AM EDT
+// Last Modified: Wed 26 Aug 2015 04:46:12 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
 *   
 *   
 *   Author  : Bruno Blais
-*   File    : averaging.h
+*   File    : Averaging.h
 *
 *   Description : Container class for all the averaged properties of all files
 *
@@ -21,7 +21,7 @@
 #ifndef AVERAGING_H
 #define AVERAGING_H 
 
-class averaging
+class Averaging
 {
 private :
     int	     n_;	    // Number of averages stored
@@ -46,8 +46,8 @@ private :
     double   perc_;         // Percentiles
 
 public :
-    averaging(int,char**,int);
-    ~averaging();
+    Averaging(int,char**,int);
+    ~Averaging();
     void allocate(int);
     void setIter(int, int);
     void setV(int, std::vector<double>);

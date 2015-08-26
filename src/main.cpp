@@ -26,7 +26,7 @@
 #include "options.h"
 #include "steps.h"
 #include "particles.h"
-#include "averaging.h"
+#include "Averaging.h"
 #include "terminal.h"
 #include "trajectories.h"
 #include "MixingIndex.h"
@@ -53,11 +53,11 @@ int main(int argc, char* argv[])
     //-----------------------------------------
     MixingIndex     mixingIndex(argc, argv, opt.getNumberOfFiles());
     Pca             pca(argc,argv);
-    averaging       avg(argc, argv, opt.getNumberOfFiles());
+    Averaging       avg(argc, argv, opt.getNumberOfFiles());
     
     // Allocate the steps
     stp = new steps[opt.getNumberOfFiles()];
-   
+  
     // Transfer information to each individual step
     opt.setSteps(stp);
 

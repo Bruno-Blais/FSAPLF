@@ -229,6 +229,16 @@ void options::getFilesIdentification()
 
 }
 
+void options::setSteps(steps* stp)
+{
+    //This function sets the individual information for each time step in the steps object
+    for (int i = 0 ; i < nFiles_ ; i++)
+    {
+	stp[i].setPath(filesPath_[i].string());
+	stp[i].setNumber(i);
+	if(planeOn_) stp[i].setPlane(plane_);
+    }
+}
 
 // Accessors
 
@@ -258,14 +268,5 @@ std::string options::getOutputPath(){return outputPath_;}
 
 plane options::getPlane(){return plane_;}
 
-void options::setSteps(steps* stp)
-{
-    //This function sets the individual information for each time step in the steps object
-    for (int i = 0 ; i < nFiles_ ; i++)
-    {
-	stp[i].setPath(filesPath_[i].string());
-	stp[i].setNumber(i);
-	if(planeOn_) stp[i].setPlane(plane_);
-    }
-}
+
 
