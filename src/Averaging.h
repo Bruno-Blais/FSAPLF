@@ -1,4 +1,4 @@
-// Last Modified: Wed 26 Aug 2015 04:46:12 PM EDT
+// Last Modified: Wed 26 Aug 2015 04:53:29 PM EDT
 /******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -53,7 +53,7 @@ public :
     void setV(int, std::vector<double>);
     void setX(int, std::vector<double>);
     void setF(int, std::vector<double>);
-    void particles(int, double**, double**, double**, double**);
+    void averageParticles(int, double**, double**, double**, double**);
     void calcAverage();
     std::vector<double> calcPercentageMax(double**, int, double);
     void writeFile(std::string, std::string);

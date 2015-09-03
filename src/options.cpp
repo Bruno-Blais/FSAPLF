@@ -30,7 +30,7 @@
 * HEADER INCLUDES
 ********************/
 #include "options.h"
-#include "steps.h"
+#include "Steps.h"
 
 #define verbose 0
 #define WIDTH   30
@@ -49,7 +49,6 @@ options::options(int argc , char* argv[])
     trajectories_=false;
     planeOn_=false;
     batch_=false;
-    box_=false;
     pca_=false;
     mixingIndex_=false;
     batchFreq_=999999;  
@@ -72,11 +71,6 @@ options::options(int argc , char* argv[])
 	    batchFreq_ = atoi(argv[i+1]);
 	    std::cout << std::setw(WIDTH) << "Memory flush frequency" << ": " <<  batchFreq_ << std::endl;
 	    i+=2;
-	}
-	else if("-box" ==arg)
-	{
-	    std::cout << "Region boxing analysis will take place" << std::endl;
-	    box_=true;
 	}
 
 	else if ("-ext" == arg)
@@ -225,11 +219,11 @@ void options::getFilesIdentification()
 	std::cout << p << " is not a directory" << std::endl;
     }
     else
-	std::cout << p << " does not even exit ??? what is wrong with you?" << std::endl;
+	std::cout << p << " does not exit" << std::endl;
 
 }
 
-void options::setSteps(steps* stp)
+void options::setSteps(Steps* stp)
 {
     //This function sets the individual information for each time step in the steps object
     for (int i = 0 ; i < nFiles_ ; i++)

@@ -1,4 +1,4 @@
-// Last Modified: Wed 14 Jan 2015 11:42:50 AM EST
+// Last Modified: Thu 03 Sep 2015 04:35:59 PM EDT
 /*******************************************************************************************
 *
 *   Framework for the Statistical Analysis of Particle-Laden Flows
@@ -27,16 +27,9 @@ void terminalInit()
 {
     cout << endl << endl;
     cout << "****************************************************************************" << endl;
-    //cout << "    ______ _____  ___  ______ _      _____"<<endl 
-    //     << "    |  ___/  ___|/ _ \\ | ___ \\ |    |  ___|"<<endl
-    //     << "    | |_  \ `--./  /_\\ \\| |_/ / |    | |_    "<<endl
-    //     << "    |  _|  `--. \\  _  ||  __/| |    |  _|  "<<endl
-    //     << "    | |   /\\__/ / | | || |   | |____| |    "<<endl
-    //     << "    \\_|   \\____/\\_| |_/\\_|   \\_____/\\_|   "<<endl;
-    //cout << "*                                                                          *" << endl;
     cout << "* FSAPLF                                                                   *" << endl;
     cout << "* Framework for the Statistical Analysis of Particle-Laden Flows           *" << endl;
-    cout << "* Version 0.3						                   *" << endl;
+    cout << "* Version 0.4						                   *" << endl;
     cout << "* Created by Bruno Blais				                   *" << endl;
     cout << "****************************************************************************" << endl;
     cout << endl;

@@ -24,13 +24,14 @@
 * HEADER INCLUDES
 *********************/
 #include "options.h"
-#include "steps.h"
-#include "particles.h"
+#include "Steps.h"
+#include "Particles.h"
 #include "Averaging.h"
 #include "terminal.h"
 #include "trajectories.h"
 #include "MixingIndex.h"
 #include "Pca.h"
+#include "Rsd.h"
 
 using namespace std;
 
@@ -40,7 +41,7 @@ int main(int argc, char* argv[])
     terminalInit();
 
     // Declarations and constructors
-    steps* stp;
+    Steps* stp;
     trajectories trj;
 
     //Options constructor parses the input from the terminal ---> this is to be deprecated 
@@ -54,9 +55,10 @@ int main(int argc, char* argv[])
     MixingIndex     mixingIndex(argc, argv, opt.getNumberOfFiles());
     Pca             pca(argc,argv);
     Averaging       avg(argc, argv, opt.getNumberOfFiles());
+    Rsd             rsd(argc, argv, opt.getNumberOfFiles());
     
     // Allocate the steps
-    stp = new steps[opt.getNumberOfFiles()];
+    stp = new Steps[opt.getNumberOfFiles()];
   
     // Transfer information to each individual step
     opt.setSteps(stp);
@@ -77,7 +79,7 @@ int main(int argc, char* argv[])
             if (opt.getAveraging())
             {
                 avg.setIter(i,stp[i].getIter());
-                avg.particles(stp[i].getNumberParticles(),stp[i].getXArray(),stp[i].getVArray(),stp[i].getFArray(),stp[i].getUArray());
+                avg.averageParticles(stp[i].getNumberParticles(),stp[i].getXArray(),stp[i].getVArray(),stp[i].getFArray(),stp[i].getUArray());
 	    }
 
 	    if (opt.getPlaneOn())
@@ -110,7 +112,7 @@ int main(int argc, char* argv[])
                 //Flush the batchFreq_ previous iterations
                 for (int j =(i-2*opt.getBatchFreq()) ; j<(i-opt.getBatchFreq())  ; j++)
                 {
-                   stp[j].~steps(); 
+                   stp[j].~Steps(); 
                 }
             }
 

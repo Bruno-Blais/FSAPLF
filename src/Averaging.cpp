@@ -38,6 +38,10 @@ Averaging::Averaging(int argc, char* argv[], int nSteps)
 {
     int i=0;
     std::string arg;
+
+    //Initialized to -1 to prevent errors in the loop of the destructor
+    n_=-1;
+
     r_=NULL;
     v_=NULL;
     x_=NULL;
@@ -108,7 +112,7 @@ void Averaging::allocate(int n)
     }
 }
 
-void Averaging::particles(int n, double** x, double** v, double** f, double** u)
+void Averaging::averageParticles(int n, double** x, double** v, double** f, double** u)
 {
     np_=n;
     x_=x;

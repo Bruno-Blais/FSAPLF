@@ -17,16 +17,16 @@
 *
 ********************************************************************************************/
 
-#ifndef OPTIONS_H
-#define OPTIONS_H
 
 #include <string>
 #include <vector>
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
-#include "steps.h"
+#include "Steps.h"
 #include "plane.h"
-#include "boxes.h"
+
+#ifndef OPTIONS_H
+#define OPTIONS_H
 
 
 namespace fs = boost::filesystem;
@@ -40,7 +40,6 @@ private :
     bool trajectories_;		    // Enables storage of the particle trajectories
     bool planeOn_;		    // Enables planes of porosity
     bool batch_;		    // Enables a batch treatment of data and flushing out of data
-    bool box_;			    // Enables region boxing for averaging analysis
     bool pca_;                      // Enables principal component analysis
     bool mixingIndex_;              // Enables Mixing Index analysis (Doucet et al. 2008)
     
@@ -57,10 +56,6 @@ private :
     std::string pcaType_;           // Type of PCA analysis
     int    pcaIt0_;                 // Initial iteration of PCA
     
-    // Information about boxes for averaging
-    int nBox_;
-    boxes *boxes_;		    // Cartesian boxes and cylindrical boxes are available
-    
     // Informations about planes
     plane plane_;
 
@@ -72,7 +67,7 @@ public :
     ~options();
     void getFilesIdentification();
     void setMode(int argc , char* argv[]);
-    void setSteps (steps*);
+    void setSteps (Steps*);
 
     //Accessors
     bool getAveraging();
