@@ -36,8 +36,9 @@
 #define WIDTH   30
 #define WIDTH2  36
 
-Rsd::Rsd(int argc, char* argv[], int nSteps) 
+Rsd::Rsd(int argc, char* argv[]) 
 {
+    initiated_=false;
     std::string arg;
     int i=0;
     
@@ -67,6 +68,7 @@ Rsd::Rsd(int argc, char* argv[], int nSteps)
             }
             else
             {
+                enabled_=true;
                 std::cout << std::setw(WIDTH)  << "RSD" << ": enabled" << std::endl;
                 type_=string(argv[i+1]);
                 std::transform(type_.begin(), type_.end(), type_.begin(), ::tolower);
@@ -80,7 +82,9 @@ Rsd::Rsd(int argc, char* argv[], int nSteps)
                     }
                     i+=4;
                 
-                    std::cout << std::setw(WIDTH2) << "Origin: " << origin_[0] << " " << origin_[1] << " " << origin_[2] << std::endl;
+                    std::cout << std::setw(WIDTH2) << "Origin: " << origin_[0] 
+                        << " " << origin_[1] << " " << origin_[2] << std::endl;
+                    
                     if (type_ == "cartesian")
                     {
                         axis_=atoi(argv[i+1]);
@@ -100,8 +104,8 @@ Rsd::Rsd(int argc, char* argv[], int nSteps)
 
                     // TODO
                     // The probing points and their sizes need to be added
-                   arg=string(argv[i+1]);
-                   Rsd::loadProbes(arg);
+                    arg=string(argv[i+1]);
+                    Rsd::loadProbes(arg);
                 }
                 else
                 {
@@ -125,13 +129,12 @@ Rsd::~Rsd()
 
 void Rsd::loadProbes(string fname)
 {
-    std::ifstream ficIn; // input file identifier
-    ficIn.open(fname.c_str()); // Conversion of string to char so file may be opened
+    std::ifstream ficIn;        // input file identifier
+    ficIn.open(fname.c_str());  // Conversion of string to char so file may be opened
     
-    //Declarations
-    std::string buffer;
-    std::vector<std::string> tokens;
-    std::vector<double> point;
+    // Declarations
+    std::string buffer; // buffer for the getline
+    std::vector<std::string> tokens; // line will be split into tokens seperator
 
     if (ficIn.fail())
     {
@@ -140,33 +143,105 @@ void Rsd::loadProbes(string fname)
     else
     {
 	std::cout << std::setw(WIDTH2) <<  "Opening probes file: " << fname << std::endl;
-
-        //Get the lines
-        std::getline(ficIn,buffer);
-        boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));	
-
-        // Load a single point
-        for (int i =0; i < 3 ; i ++)
+        while (true) 
         {
-            point.push_back(atof(tokens[i].c_str()));
+            //Get the line
+            std::getline(ficIn,buffer);
+            if( ficIn.eof() ) break;
+            boost::algorithm::split(tokens, buffer, boost::algorithm::is_any_of(" "));	
+            std::vector<double> point;
+            
+            // Load a single point
+            for (int i =0; i < 3 ; i ++)
+            {
+                point.push_back(atof(tokens[i].c_str()));
+            }
+
+            // Push back the point
+            probes_.push_back(point);
+            probesR_.push_back(atof(tokens[3].c_str()));
         }
-        // Push back the point
-        probes_.push_back(point);
 
-        cout << probes_[0][0] << probes_[0][1] << probes_[0][2] << std::endl;
-        //Read timestep
-	//fic_in >> nit_;
-	//getline(fic_in,buffer); //closing the line
-
-	//std::getline(fic_in,buffer);
-	//fic_in >> np_;
-
-	//for (int i=0 ; i< 5 ; i++)
-	//{
-	//    std::getline(fic_in,buffer);
-	//}
+        if (DEBUG)
+        {
+            for (unsigned int i=0 ; i < probes_.size() ; i++)
+            {
+                std::cout << "Point " << i << " :" << " " << probes_[i][0] << " " << probes_[i][1] << " " << probes_[i][2] << std::endl;
+            }
+        }
     }
+}
+void Rsd::manage(int iter, int np, int* id, double** x)
+{
+    if (enabled_)
+    {
+        id_=id; //attribute array;
+        np_=np;
+        x_=x;
 
+        // If zeroth iteration has already been set, normal analysis
+        if (!initiated_)
+        {
+            if (DEBUG) std::cout << "Initializating labels" << std::endl;
+            initiated_=true;
+            iters_.push_back(iter);
+            labelParticles();
+        }
+        else
+        {
+            if (DEBUG) std::cout << "Analyzing" << std::endl;
+        }
+    }
+}
+
+void Rsd::labelParticles()
+{
+    labels_.resize(np_);
+    if (type_ == "cartesian")
+    {
+        labelParticlesCartesian();
+    }
+    if (type_ == "cylindrical")
+    {
+        labelParticlesCylindrical();
+    }
+}
+
+void Rsd::labelParticlesCartesian()
+{
+    for (int i=0; i <np_ ; i++)
+    {
+        if(x_[i][axis_] < origin_[axis_])
+        {
+            labels_[id_[i]]=1;
+        }
+        else
+        {
+            labels_[id_[i]]=0;
+        }
+    }
+}
+
+void Rsd::labelParticlesCylindrical()
+{
+    double r;
+    double xc, yc,c;
+    
+    for (int i=0; i <np_ ; i++)
+    {
+        xc = x_[i][0] - origin_[0];
+        xc = x_[i][0] - origin_[0];
+        r = sqrt(x_[i][0]*x_[i][0]+x_[i][1]*x_[i][1])
+        c = sqrt(origin_[0]*origin[0] + origin[1]*origin[1])
+        if(])
+        {
+            labels_[id_[i]]=1;
+        }
+        else
+        {
+            labels_[id_[i]]=0;
+        }
+    }
 }
 
 void Rsd::printMan()

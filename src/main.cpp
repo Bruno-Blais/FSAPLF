@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     MixingIndex     mixingIndex(argc, argv, opt.getNumberOfFiles());
     Pca             pca(argc,argv);
     Averaging       avg(argc, argv, opt.getNumberOfFiles());
-    Rsd             rsd(argc, argv, opt.getNumberOfFiles());
+    Rsd             rsd(argc, argv);
     
     // Allocate the steps
     stp = new Steps[opt.getNumberOfFiles()];
@@ -100,7 +100,9 @@ int main(int argc, char* argv[])
             {
                 mixingIndex.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
             }
-            
+
+            rsd.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
+
             if (opt.getPca())
             {
                 pca.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
