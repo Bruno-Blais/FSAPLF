@@ -322,6 +322,9 @@ void MixingIndex::write(std::string path, std::string label)
     std::string filename = path+"/"+label+"_mixingIndex";
     std::ofstream ficOut(filename.c_str());
 
+
+    if(DEBUG) std::cout << "Writing output file : " << filename << std::endl;
+
     ficOut	<< std::setw(WIDTHOUT) << "iter " 
         << std::setw(WIDTHOUT) << "L1 " 	    
         << std::setw(WIDTHOUT) << "L2 " 	

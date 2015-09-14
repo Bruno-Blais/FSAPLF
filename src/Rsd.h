@@ -37,9 +37,13 @@ private :
     double length_;                                 
     std::vector<std::vector<double> > probes_;      // Coordinates of all probes
     std::vector<double> probesR_;                   // Radius of all probes
-    std::vector<int> iters_;
-    std::vector<int> labels_;
-    std::vector<int> idsL_;
+    std::vector<int> iter_;                        // Number of iterations
+    std::vector<int> label_;                       // Labels of the particles
+
+    // The idea right now is just to count the particles and to calculate the RSD a posteriori in python...
+    // Maybe this is not the right idea, but this is easier to interpret
+    std::vector<std::vector<int> > nc_;             // number of colored (label=1) particles
+    std::vector<std::vector<int> > npp_;            // number of particles in a probe
 
     int* id_;
     int np_;
@@ -51,11 +55,13 @@ private :
     void labelParticles();
     void labelParticlesCartesian();
     void labelParticlesCylindrical();
+    void analyze();
 
 public :
     Rsd(int, char**);
     ~Rsd();
     void manage(int,int,int*,double**);
+    void write(std::string,std::string);
 
 };
 #endif

@@ -24,6 +24,7 @@ OUT:
     -out path
 
 Path of the output files that will be made by FSAPLF
+---
 
 ---
 PLANE
@@ -38,9 +39,21 @@ This gives a much finer analysis than the void fraction projection onto the mesh
 ---
 
 ---
-PCA
-    -pca 
+MIXING INDEX
+    -mixingIndex CoordinatesSystem initialIteration
 
+Coordinate systems : Cartesian (x y z), Cylindrical (r z), fullCylindrical (r theta z)
+
+Carry out a Mixing Index analysis in the coordinate system required starting with the configuration given by initialIteration
+---
+
+---
+RSD
+    -rsd TYPE origin axis/radius
+
+Types : Cartesian, Cylindrical
+Origin: Origin of the plane (needs to be a vector)
+axis/radius: For mode cartesian only the axis needs to be specified, for the cylindrical mode, the radius of the inner cylinder must be specified
 ---
 
 #-----------------------------------
@@ -59,6 +72,13 @@ fsaplf -ext .dump -average -out ./out -path ./post -plane 1 2 200 0.025 0.001 0.
 # Mixing case
 # Launch averaging and plane analysis along z axis with 200 circular planes of dimension 0.025
 fsaplf -ext .dump -average 0.999 -out ./outFsaplf/ -path ./post -plane 2 2 200 0.1825 0.0001 0.365  -batch 10
+
+# Launch Mixing Index analysis 
+fsaplf -ext .dump -out ./outFsaplf/ -path ./post -mixingIndex fullCylindrical 0
+
+# Launch RSD analysis
+fsaplf -ext .dump -path DEM/post -out outRsd -rsd cartesian 0 0 0 0 probes.dat -batch 10
+
 
 #-------------------------
 #Design Decisions & Issues

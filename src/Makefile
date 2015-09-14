@@ -3,7 +3,7 @@ CFLAGS = -std=c++11 -O2 -funroll-loops -fstrict-aliasing -Wall -W -Wno-uninitial
 EXEC_NAME = fsaplf
 INCLUDES = 
 LIBS = -lboost_system -lboost_filesystem -lboost_regex
-OBJ_FILES = main.o Particles.o Pca.o terminal.o options.o Steps.o Averaging.o plane.o writing.o trajectories.o MixingIndex.o Rsd.o calc.o eigen_sym.o
+OBJ_FILES = main.o Particles.o Pca.o terminal.o options.o Steps.o Averaging.o plane.o writing.o trajectories.o MixingIndex.o Rsd.o calc.o eigen_sym.o util.o
 INSTALL_DIR = ../../test/
 
 all : $(EXEC_NAME)

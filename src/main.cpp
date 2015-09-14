@@ -126,6 +126,7 @@ int main(int argc, char* argv[])
 
     if (opt.getAveraging()) avg.writeFile(opt.getOutputPath(), opt.getLabel());
     if (opt.getMixingIndex()) mixingIndex.write(opt.getOutputPath(), opt.getLabel());
+    rsd.write(opt.getOutputPath(), opt.getLabel());
 
     terminalClose();
     return 0; 

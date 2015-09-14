@@ -29,16 +29,19 @@
 * HEADER INCLUDES
 ********************/
 #include "Rsd.h"
+#include "util.h"
 
 #define PI 3.14159265359
-#define DEBUG 1
+#define DEBUG 0
 #define WIDTHOUT 16
 #define WIDTH   30
 #define WIDTH2  36
+#define PRES 7
 
 Rsd::Rsd(int argc, char* argv[]) 
 {
     initiated_=false;
+    enabled_=false;
     std::string arg;
     int i=0;
     
@@ -48,8 +51,7 @@ Rsd::Rsd(int argc, char* argv[])
         arg = argv[i]; 
         
         // Convert argument to lower case
-        std::transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
-        
+        arg = utilLowerStr(arg);
         if ("-rsd"==arg)
         {
             if (i+1>argc-1)
@@ -60,7 +62,7 @@ Rsd::Rsd(int argc, char* argv[])
                 exit(EXIT_FAILURE);
             }
             arg=argv[i+1];
-            std::transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
+            arg=utilLowerStr(arg);
 
             if ("man"==arg)
             {
@@ -71,7 +73,7 @@ Rsd::Rsd(int argc, char* argv[])
                 enabled_=true;
                 std::cout << std::setw(WIDTH)  << "RSD" << ": enabled" << std::endl;
                 type_=string(argv[i+1]);
-                std::transform(type_.begin(), type_.end(), type_.begin(), ::tolower);
+                type_=utilLowerStr(type_);
                 std::cout << std::setw(WIDTH2) << "Type: " << type_ << std::endl;
                 
                 if(type_ == "cartesian" || type_ == "cylindrical")
@@ -102,8 +104,6 @@ Rsd::Rsd(int argc, char* argv[])
                     }
                     i++;
 
-                    // TODO
-                    // The probing points and their sizes need to be added
                     arg=string(argv[i+1]);
                     Rsd::loadProbes(arg);
                 }
@@ -157,7 +157,7 @@ void Rsd::loadProbes(string fname)
                 point.push_back(atof(tokens[i].c_str()));
             }
 
-            // Push back the point
+            // Push back the point into the vector of vector
             probes_.push_back(point);
             probesR_.push_back(atof(tokens[3].c_str()));
         }
@@ -178,25 +178,68 @@ void Rsd::manage(int iter, int np, int* id, double** x)
         id_=id; //attribute array;
         np_=np;
         x_=x;
+        iter_.push_back(iter);
 
         // If zeroth iteration has already been set, normal analysis
         if (!initiated_)
         {
             if (DEBUG) std::cout << "Initializating labels" << std::endl;
             initiated_=true;
-            iters_.push_back(iter);
             labelParticles();
+            analyze();
         }
         else
         {
             if (DEBUG) std::cout << "Analyzing" << std::endl;
+            analyze();
         }
     }
 }
+void Rsd::analyze()
+{
+    int nl,n;
+    double r;
+    std::vector<int> nc,npp; 
+    for (unsigned int i=0 ; i<probes_.size(); i++)
+    {
+        n=0;
+        nl=0;
+
+        for (int j=0; j<np_ ; j++)
+        {
+            r=0;
+            for (int k = 0 ; k<3 ; k++)
+            {
+                r+= (x_[j][k] - probes_[i][k]) * (x_[j][k] - probes_[i][k]) ;
+            }
+           
+            if(DEBUG) std::cout << "Radius is :" << sqrt(r) << " \tx : " << x_[j][0] << " " << x_[j][1] << " " << x_[j][2] << std::endl << "\tProbesR\t"<< probesR_[i];
+
+            if (r<=(probesR_[i]*probesR_[i]))
+            {
+                n+=1;
+                nl+=label_[id_[j]];
+                if (DEBUG)
+                {
+                    std::cout << "Particle detected" << " id " << id_[j] << " label " << label_[id_[j]] <<std::endl;
+                    std::cout << "n and nl are worth : " << n << "\t" << nl << std::endl;
+                }
+            }
+        }
+        nc.push_back(nl);
+        npp.push_back(n);
+        if(DEBUG) std::cout << " Probe number " << i << " npp and nc\t" << n << " " << nl << std::endl;
+    }
+
+    // Push back into the large vector storage
+    nc_.push_back(nc);
+    npp_.push_back(npp);
+}
+
 
 void Rsd::labelParticles()
 {
-    labels_.resize(np_);
+    label_.resize(np_);
     if (type_ == "cartesian")
     {
         labelParticlesCartesian();
@@ -211,13 +254,14 @@ void Rsd::labelParticlesCartesian()
 {
     for (int i=0; i <np_ ; i++)
     {
-        if(x_[i][axis_] < origin_[axis_])
+        if(x_[i][axis_] >= origin_[axis_])
         {
-            labels_[id_[i]]=1;
+            label_[id_[i]]=1;
+            if(DEBUG) std::cout << " Label being apposed x : " << x_[i][axis_] << "\tid is : " << id_[i] << std::endl;
         }
         else
         {
-            labels_[id_[i]]=0;
+            label_[id_[i]]=0;
         }
     }
 }
@@ -225,21 +269,20 @@ void Rsd::labelParticlesCartesian()
 void Rsd::labelParticlesCylindrical()
 {
     double r;
-    double xc, yc,c;
+    double xc, yc;
     
     for (int i=0; i <np_ ; i++)
     {
         xc = x_[i][0] - origin_[0];
-        xc = x_[i][0] - origin_[0];
-        r = sqrt(x_[i][0]*x_[i][0]+x_[i][1]*x_[i][1])
-        c = sqrt(origin_[0]*origin[0] + origin[1]*origin[1])
-        if(])
+        yc = x_[i][1] - origin_[1];
+        r = sqrt(xc*xc+yc*yc);
+        if(r>=length_)
         {
-            labels_[id_[i]]=1;
+            label_[id_[i]]=1;
         }
         else
         {
-            labels_[id_[i]]=0;
+            label_[id_[i]]=0;
         }
     }
 }
@@ -252,8 +295,32 @@ void Rsd::printMan()
     std::cout << std::setw(WIDTH2) << "Types available: Cartesian, Cylindrical " << std::endl;
     std::cout << std::setw(WIDTH2) << "Arguments Cartesian : Origin (x0,y0,z0) and Axis of seperation " << std::endl;
     std::cout << std::setw(WIDTH2) << "Arguments Cylindrical : Origin (x0,y0,z0) and radius " << std::endl;
+    std::cout << std::setw(WIDTH2) << "Last argument is always the name of the probe file " << std::endl;
     std::cout << std::setw(WIDTH2) << "NOTE : cylindrical modes is based on a sub-division into two radial zone " << std::endl;
     std::cout << "----------------------------------------------------------------------------" << std::endl;
     std::cout << std::endl << std::endl;
 }
 
+void Rsd::write(std::string path, std::string label)
+{
+    std::string filename = path+"/"+label+"_rsd";
+    std::ofstream ficOut(filename.c_str());
+
+    ficOut << std::setw(WIDTHOUT) << "iter ";
+    for (unsigned int i=0 ; i <probes_.size(); i++)
+    {
+       ficOut << std::setw(WIDTHOUT) << "N-" << i << " colored" ;	    
+       ficOut << std::setw(WIDTHOUT) << "N-" << i << " particles" ;	
+    }
+       ficOut << std::endl;
+
+    for (unsigned int i=0 ; i<iter_.size() ; i++)
+    {
+        ficOut << std::setw(WIDTHOUT);
+	ficOut << std::setprecision(PRES);
+	ficOut	<< iter_[i] << " " ;  
+	for (unsigned int j=0 ; j<probes_.size() ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << nc_[i][j] << "\t" <<npp_[i][j];
+	ficOut << std::endl;
+    }
+    ficOut.close();
+}
