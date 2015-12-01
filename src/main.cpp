@@ -32,6 +32,7 @@
 #include "MixingIndex.h"
 #include "Pca.h"
 #include "Rsd.h"
+#include "Suspended.h"
 
 using namespace std;
 
@@ -56,7 +57,8 @@ int main(int argc, char* argv[])
     Pca             pca(argc,argv);
     Averaging       avg(argc, argv, opt.getNumberOfFiles());
     Rsd             rsd(argc, argv);
-    
+    Suspended       suspended(argc,argv);
+
     // Allocate the steps
     stp = new Steps[opt.getNumberOfFiles()];
   
@@ -102,6 +104,7 @@ int main(int argc, char* argv[])
             }
 
             rsd.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray());
+            suspended.manage(stp[i].getIter(),stp[i].getNumberParticles(),stp[i].getId(),stp[i].getXArray(),stp[i].getVArray());
 
             if (opt.getPca())
             {
@@ -127,6 +130,7 @@ int main(int argc, char* argv[])
     if (opt.getAveraging()) avg.writeFile(opt.getOutputPath(), opt.getLabel());
     if (opt.getMixingIndex()) mixingIndex.write(opt.getOutputPath(), opt.getLabel());
     rsd.write(opt.getOutputPath(), opt.getLabel());
+    suspended.write(opt.getOutputPath(), opt.getLabel());
 
     terminalClose();
     return 0; 
