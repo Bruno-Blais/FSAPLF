@@ -125,7 +125,7 @@ void Suspended::manage(int iter, int np, int* id, double** x, double** v)
                 nPart_.push_back(np_);
             }
         }
-        else
+        else if (iter <=end_ && initiated_)
         {
             iter_.push_back(iter);
             if (DEBUG) std::cout << "Analyzing" << std::endl;
