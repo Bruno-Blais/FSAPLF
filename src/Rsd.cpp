@@ -303,24 +303,28 @@ void Rsd::printMan()
 
 void Rsd::write(std::string path, std::string label)
 {
-    std::string filename = path+"/"+label+"_rsd";
-    std::ofstream ficOut(filename.c_str());
-
-    ficOut << std::setw(WIDTHOUT) << "iter ";
-    for (unsigned int i=0 ; i <probes_.size(); i++)
+    if (enabled_)
     {
-       ficOut << std::setw(WIDTHOUT) << "N-" << i << " colored" ;	    
-       ficOut << std::setw(WIDTHOUT) << "N-" << i << " particles" ;	
-    }
-       ficOut << std::endl;
+    
+        std::string filename = path+"/"+label+"_rsd";
+        std::ofstream ficOut(filename.c_str());
 
-    for (unsigned int i=0 ; i<iter_.size() ; i++)
-    {
-        ficOut << std::setw(WIDTHOUT);
-	ficOut << std::setprecision(PRES);
-	ficOut	<< iter_[i] << " " ;  
-	for (unsigned int j=0 ; j<probes_.size() ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << nc_[i][j] << "\t" <<npp_[i][j];
-	ficOut << std::endl;
+        ficOut << std::setw(WIDTHOUT) << "iter ";
+        for (unsigned int i=0 ; i <probes_.size(); i++)
+        {
+            ficOut << std::setw(WIDTHOUT) << "N-" << i << " colored" ;	    
+            ficOut << std::setw(WIDTHOUT) << "N-" << i << " particles" ;	
+        }
+        ficOut << std::endl;
+
+        for (unsigned int i=0 ; i<iter_.size() ; i++)
+        {
+            ficOut << std::setw(WIDTHOUT);
+            ficOut << std::setprecision(PRES);
+            ficOut	<< iter_[i] << " " ;  
+            for (unsigned int j=0 ; j<probes_.size() ; j++) ficOut << std::setw(WIDTHOUT) << std::setprecision(PRES) << nc_[i][j] << "\t" <<npp_[i][j];
+            ficOut << std::endl;
+        }
+        ficOut.close();
     }
-    ficOut.close();
 }

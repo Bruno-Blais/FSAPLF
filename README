@@ -56,6 +56,15 @@ Origin: Origin of the plane (needs to be a vector)
 axis/radius: For mode cartesian only the axis needs to be specified, for the cylindrical mode, the radius of the inner cylinder must be specified
 ---
 
+---
+SUSPENDED
+    -suspended start end limit axis type typeArg 
+
+Types : displacement, zdisplacement, velocity
+Type argument : Magnitude of the displacement (or velocity) required to be deemed suspended
+---
+
+
 #-----------------------------------
 # Description of the software
 #-----------------------------------
@@ -79,6 +88,8 @@ fsaplf -ext .dump -out ./outFsaplf/ -path ./post -mixingIndex fullCylindrical 0
 # Launch RSD analysis
 fsaplf -ext .dump -path DEM/post -out outRsd -rsd cartesian 0 0 0 0 probes.dat -batch 10
 
+# Launch Suspended analysis
+$FSAPLF/src/fsaplf  -ext .dump -path ss_0.05_1e8_0.90_148700_550/DEM/post/ -out out -batch 10 -suspended 3000000 4000000 0.1 2 zdisplacement 0.001
 
 #-------------------------
 #Design Decisions & Issues
