@@ -63,6 +63,7 @@ MixingIndex::MixingIndex(int argc, char* argv[], int nSteps)
             it0_=atoi(argv[i+2]);
 	    std::cout << std::setw(WIDTH)  << "Mixing index analysis" << ": enabled" << std::endl;
 	    std::cout << std::setw(WIDTH2) << "Type: " << type_ << std::endl;
+	    std::cout << std::setw(WIDTH2) << "It 0: " << it0_ << std::endl;
             i+=3;
         }
         else
